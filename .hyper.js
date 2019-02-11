@@ -9,7 +9,7 @@ module.exports = {
     updateChannel: 'stable',
 
     // default font size in pixels for all tabs
-    fontSize: 12,
+    fontSize: 16,
 
     // font family with optional fallbacks
     fontFamily: 'Menlo, "DejaVu Sans Mono", Consolas, "Lucida Console", monospace',
@@ -36,7 +36,7 @@ module.exports = {
     cursorShape: 'BLOCK',
 
     // set to `true` (without backticks and without quotes) for blinking cursor
-    cursorBlink: false,
+    cursorBlink: true,
 
     // color of the text
     foregroundColor: '#fff',
@@ -107,7 +107,7 @@ module.exports = {
 
     // for setting shell arguments (i.e. for using interactive shellArgs: `['-i']`)
     // by default `['--login']` will be used
-    shellArgs: ['--login'],
+    shellArgs: [],
 
     // for environment variables
     env: {},
@@ -138,28 +138,23 @@ module.exports = {
   //   `@company/project`
   //   `project#1.0.1`
   plugins: [
-    "hyper-dracula",
     "hyperline",
+    "hyper-dracula",
     "hypercwd",
-    "hyperterm-visor",
     "hyperterm-paste",
     "hyperterm-lastpass",
     "hyperterm-tabs",
     "hyperlinks",
     "hyper-startup",
     "hyper-broadcast",
-    "Hyper-search",
     "hyper-confirm",
-    "hyper-blink",
     "hyperterm-mactabs",
-    "config-hyperterm",
     "hyperlayout",
     "hyper-tabs-enhanced",
     "hyper-dark-scrollbar",
     "hyper-pane",
-    "hyper-spotify",
     "hyper-opacity",
-    "hyperterm-sourcerer"
+//    "hyperterm-sourcerer"
   ],
 
   hyperline: {
@@ -169,8 +164,8 @@ module.exports = {
 	  "memory",
 	  "battery",
 	  "cpu",
-	  "network", 
-	  "spotify"
+	  "network",
+      //  "spotify"
       ]
   },
 
