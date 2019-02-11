@@ -169,8 +169,8 @@ module.exports = {
       ]
   },
   opacity: {
-    focus: 0.9,
-    blur: 0.5
+	focus: 0.2,
+	blur: 0.5
   },
 
   // in development, you can create a directory under
