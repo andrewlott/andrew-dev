@@ -1,516 +1,254 @@
-<a name="top" id="fork-destination-box"></a>
-<a href="http://spacemacs.org"><img src="https://cdn.rawgit.com/syl20bnr/spacemacs/442d025779da2f62fc86c2082703697714db6514/assets/spacemacs-badge.svg" alt="Made with Spacemacs"></a><a href="http://www.twitter.com/spacemacs"><img src="http://i.imgur.com/tXSoThF.png" alt="Twitter" align="right"></a><br>
-- - -
-<p align="center"><img src="/doc/img/title2.png" alt="Spacemacs"/></p>
-<p align="center">
-<b><a href="http://spacemacs.org/doc/DOCUMENTATION#core-pillars">philosophy</a></b>
-|
-<b><a href="http://spacemacs.org/doc/DOCUMENTATION#who-can-benefit-from-this">for whom?</a></b>
-|
-<b><a href="http://spacemacs.org/doc/DOCUMENTATION#screenshots">screenshots</a></b>
-|
-<b><a href="http://spacemacs.org/doc/DOCUMENTATION.html">documentation</a></b>
-|
-<b><a href="CONTRIBUTING.org">contribute</a></b>
-|
-<b><a href="http://spacemacs.org/doc/DOCUMENTATION#achievements">achievements</a></b>
-|
-<b><a href="http://spacemacs.org/doc/FAQ">FAQ</a></b>
-</p>
+<div align="center">
 
-- - -
+# Doom Emacs
 
-<p align="center">
-<a href="https://gitter.im/syl20bnr/spacemacs?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge"><img src="https://badges.gitter.im/Join Chat.svg" alt="Gitter"></a>
-<a href="https://circleci.com/gh/syl20bnr/spacemacs/tree/develop"><img src="https://circleci.com/gh/syl20bnr/spacemacs/tree/develop.svg?style=shield" alt="Build Status"></a>
-<a href="https://waffle.io/syl20bnr/spacemacs"><img src="https://badge.waffle.io/syl20bnr/spacemacs.png?label=Merging...&title=Merging" alt="PR being merged"></a>
-<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ESFVNPKP4Y742"><img src="https://img.shields.io/badge/Paypal-Donate-blue.svg" alt="Donate"></a>
-<a href="https://shop.spreadshirt.com/spacemacs-shop"><img src="https://img.shields.io/badge/Shop-T--Shirts-blue.svg" alt="Donate"></a>
-<a href="http://www.slant.co/topics/12/~what-are-the-best-programming-text-editors"><img src="https://img.shields.io/badge/Slant-Recommend-ff69b4.svg" alt="Recommend it"></a>
-</p>
+[Install](#install) • [Documentation] • [FAQ] • [Screenshots] • [Contribute](#contribute)
 
-- - -
+![Made with Doom Emacs](https://img.shields.io/github/tag/hlissner/doom-emacs.svg?style=flat-square&label=release&color=58839b)
+![Minimum Emacs version supported: 26.3 ](https://img.shields.io/badge/Supports-Emacs_26.3+-blueviolet.svg?style=flat-square&logo=GNU%20Emacs&logoColor=white)
+![Latest commit](https://img.shields.io/github/last-commit/hlissner/doom-emacs/develop?style=flat-square)
+![Build status: develop](https://img.shields.io/github/workflow/status/hlissner/doom-emacs/CI/develop?style=flat-square)
+[![Discord Server](https://img.shields.io/discord/406534637242810369?color=blue&label=Discord%20Chat&logo=discord&logoColor=white&style=flat-square)][Discord]
 
+![Doom Emacs Screenshot](https://raw.githubusercontent.com/hlissner/doom-emacs/screenshots/main.png)
 
-**Quick Install:**
+</div>
 
-This assumes you don't have an existing Emacs setup and want to run Spacemacs as
-your config. If you do have one, look at
-the [full installation instructions](#install) for other options.
+---
 
-* For stable releases:
-  ```shell
-  git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
-  ```
-
-* For development updates and participation:
-  ```shell
-  git clone -b develop https://github.com/syl20bnr/spacemacs ~/.emacs.d
-  ```
-
-<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-generate-toc again -->
-**Table of Contents**
-
+### Table of Contents
 - [Introduction](#introduction)
 - [Features](#features)
-- [Documentation](#documentation)
-- [Getting Help](#getting-help)
 - [Prerequisites](#prerequisites)
-    - [Emacs](#emacs)
-        - [Linux distros](#linux-distros)
-        - [macOS](#macos)
-        - [Windows](#windows)
 - [Install](#install)
-    - [Default installation](#default-installation)
-    - [Alternative installations](#alternative-installations)
-        - [Modify HOME environment variable](#modify-home-environment-variable)
-        - [Modify spacemacs-start-directory variable](#modify-spacemacs-start-directory-variable)
-    - [Spacemacs logo](#spacemacs-logo)
-- [Update](#update)
-    - [Automatic update (on master branch)](#automatic-update-on-master-branch)
-    - [Manual update (on master branch)](#manual-update-on-master-branch)
-    - [On develop branch](#on-develop-branch)
-    - [Revert to a specific version](#revert-to-a-specific-version)
-- [Quotes](#quotes)
-- [Contributions](#contributions)
-- [Communities](#communities)
-- [License](#license)
-- [Supporting Spacemacs](#supporting-spacemacs)
+- [Roadmap](#roadmap)
+- [Getting help](#getting-help)
+- [Contribute](#contribute)
 
-<!-- markdown-toc end -->
 
 # Introduction
-Spacemacs is a new way of experiencing Emacs -- it's a sophisticated and
-polished set-up, focused on ergonomics, mnemonics and consistency.
+<a href="http://ultravioletbat.deviantart.com/art/Yay-Evil-111710573">
+  <img src="https://raw.githubusercontent.com/hlissner/doom-emacs/screenshots/cacochan.png" align="right" />
+</a>
 
-Just clone and launch it, then press the space bar to explore the interactive
-list of carefully-chosen key bindings. You can also press the home buffer's
-`[?]` button for some great first key bindings to try.
+> It is a story as old as time. A stubborn, shell-dwelling, and melodramatic
+> vimmer—envious of the features of modern text editors—spirals into
+> despair before he succumbs to the [dark side][evil-mode]. This is his config.
 
-Spacemacs can be used naturally by both Emacs and Vim users -- you can even mix
-the two editing styles. Being able to quickly switch between input styles, makes
-Spacemacs a great tool for pair-programming.
+Doom is a configuration framework for [GNU Emacs] tailored for Emacs bankruptcy
+veterans who want less framework in their frameworks, a modicum of stability
+(and reproducibility) from their package manager, and the performance of a hand
+rolled config (or better). It can be a foundation for your own config or a
+resource for Emacs enthusiasts to learn more about our favorite operating
+system.
 
-Spacemacs is currently in beta, and any contributions are very welcome.
+Its design is guided by these mantras:
 
-![spacemacs_python](doc/img/spacemacs-python.png)
++ **Gotta go fast.** Startup and run-time performance are priorities. Doom goes
+  beyond by modifying packages to be snappier and load lazier.
++ **Close to metal.** There's less between you and vanilla Emacs by design.
+  That's less to grok and less to work around when you tinker. Internals ought
+  to be written as if reading them were part of Doom's UX, and it is!
++ **Opinionated, but not stubborn.** Doom is about reasonable defaults and
+  curated opinions, but use as little or as much of it as you like.
++ **Your system, your rules.** You know better. At least, Doom hopes so! It
+  won't *automatically* install system dependencies (and will force plugins not
+  to either). Rely on `doom doctor` to tell you what's missing.
++ **Nix/Guix is a great idea!** The Emacs ecosystem is temperamental. Things
+  break and they break often. Disaster recovery should be a priority! Doom's
+  package management should be declarative and your private config reproducible,
+  and comes with a means to roll back releases and updates (still a WIP).
+  
+Check out [the FAQ][FAQ] for answers to common questions about the project.
+
 
 # Features
-- **Great documentation:** access the Spacemacs documentation with
-<kbd>SPC h SPC</kbd>.
-- **Beautiful GUI:** you'll love the distraction free UI and its functional
-mode-line.
-- **Excellent ergonomics:** all the key bindings are accessible by pressing the
-<kbd>space bar</kbd> or <kbd>alt-m</kbd>.
-- **Mnemonic key bindings:** commands have mnemonic prefixes like
-<kbd>SPC b</kbd> for all the buffer commands or <kbd>SPC p</kbd> for the project
-commands.
-- **Batteries included:** discover hundreds of ready-to-use packages nicely
-organised in configuration layers following a set of
-[conventions][CONVENTIONS.org].
+- Minimalistic good looks inspired by modern editors.
+- Curated and sane defaults for many packages, (major) OSes, and Emacs itself.
+- A modular organizational structure for separating concerns in your config.
+- A standard library designed to simplify your elisp bike shedding.
+- A declarative [package management system][package-management] (powered by
+  [straight.el]) with a command line interface. Install packages from anywhere,
+  not just (M)ELPA, and pin them to any commit.
+- Optional vim emulation powered by [evil-mode], including ports of popular vim
+  plugins like [vim-sneak], [vim-easymotion], [vim-unimpaired] and
+  [more][ported-vim-plugins]!
+- Opt-in LSP integration for many languages, using [lsp-mode] or [eglot]
+- Support for *many* programming languages. Includes syntax highlighting,
+  linters/checker integration, inline code evaluation, code completion (where
+  possible), REPLs, documentation lookups, snippets, and more!
+- Support for *many* tools, like docker, pass, ansible, terraform, and more.
+- A Spacemacs-esque [keybinding scheme][bindings], centered around leader
+  and localleader prefix keys (<kbd>SPC</kbd> and <kbd>SPC</kbd><kbd>m</kbd> for
+  evil users, <kbd>C-c</kbd> and <kbd>C-c l</kbd> for vanilla users).
+- A rule-based [popup manager][popup-system] to control how temporary buffers
+  are displayed (and disposed of).
+- Per-file indentation style detection and [editorconfig] integration. Let
+  someone else argue about tabs vs **_spaces_**.
+- Project-management tools and framework-specific minor modes with their own
+  snippets libraries.
+- Project search (and replace) utilities, powered by [ripgrep] and [ivy] or
+  [helm].
+- Isolated and persistent workspaces (also substitutes for vim tabs).
+- Support for Chinese and Japanese input systems.
+- Save a snapshot of your shell environment to a file for Emacs to load at
+  startup. No more struggling to get Emacs to inherit your `PATH`, among other
+  things.
 
-# Documentation
-Comprehensive documentation is available for each layer by pressing
-<kbd>SPC h SPC</kbd>.
-
-You can also check the [general documentation][DOCUMENTATION.org],
-[quick start guide][QUICK_START.org] and the [FAQ][FAQ.org].
-
-# Getting Help
-If you need help, ask your question in the [Gitter Chat][] and a member of the
-community will help you out.
-
-If you prefer IRC, connect to the [Gitter Chat IRC server][] and join the
-`#syl20bnr/spacemacs` channel.
 
 # Prerequisites
-Spacemacs is an extension of a popular text editor called Emacs. Thus you need
-to first install base Emacs and then download the Spacemacs extension files with
-Git.
++ Git 2.23+
++ Emacs 26.3+ (*27.1 is recommended*, or [native-comp](https://www.emacswiki.org/emacs/GccEmacs)).
++ [ripgrep] 11.0+
++ GNU `find`
++ *OPTIONAL:* [fd] 7.3.0+ (improves file indexing performance for some commands)
+  
+Doom is comprised of [~150 optional modules][Modules], some of which may have
+additional dependencies. [Visit their documentation][Modules] or run `bin/doom
+doctor` to check for any that you may have missed.
 
-## Emacs
-Spacemacs requires Emacs 25.1 or above. The development version of Emacs is not
-*officially* supported, but it should nevertheless be expected to work.
-
-Some modes require third-party tools that you'll have to install via your
-favorite package manager.
-
-### Linux distros
-Install the `emacs` package with your linux distributions package manager.
-
-Do not install the `xemacs` package. It's not supported by Spacemacs. XEmacs is
-an old fork of Emacs. The X in its name is unrelated to X11.
-
-Emacs has graphical support.
-
-**Note:** The Ubuntu LTS 12.04 and 14.04 repositories only have Emacs version
-24.3 available. Version 25.1 or greater needs to be [built from source][build_source].
-This might also be true for other linux distributions.
-
-### macOS
-
-#### Install emacs
-
-##### Using emacs-plus
-
-```
-brew tap d12frosted/emacs-plus
-brew install emacs-plus
-ln -s /usr/local/Cellar/emacs-plus/*/Emacs.app/ /Applications/
-```
-
-##### Using emacs-mac
-
-```
-brew tap railwaycat/emacsmacport
-brew install emacs-mac
-```
-
-Copy and paste the symlink (`ln`) from the install instructions if `brew linkapps`
-is deprecated.
-
-##### Using cask
-
-Homebrew now recommends to use the cask version with the following message:
-"Please try the Cask for a better-supported Cocoa version". To install the cask
-version:
-
-```
-brew cask install emacs
-```
-
-This installs a pre-built package from https://emacsformacosx.com/
-
-##### Other ways
-
-If you're not comfortable with the ways mentioned above, then
-[EmacsWiki](https://www.emacswiki.org/emacs/EmacsForMacOS#toc12) lists down
-a few ways to install Emacs for Mac OS.
-
-#### Install Source Code Pro font
-
-Once Emacs is installed, run the following commands in the terminal to install
-the default Source Code Pro font:
-
-```sh
-brew tap caskroom/fonts
-brew cask install font-source-code-pro
-```
-
-#### Install Spacemacs
-
-```
-git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
-```
-
-**Notes:**
-After completing the Spacemacs [install process](#install), then it's also
-recommended to add the [osx layer][] to your [dotfile][]. Installation
-instructions are available in the documentation for the [osx layer][].
-
-### Windows
-You can download good quality builds from the [emacs-w64 project][emacs-for-windows].
-It is recommended to install the most recent [stable build][emacs-for-windows-stable].
-
-You'll also need `gzip` and put it in your path, to download it go to the
-[GNUWin32 project page][gzip-for-windows]
-
-Be sure to declare an environment variable named `HOME` that's pointing to your
-user directory `C:\Users\<username>`. Then you can clone Spacemacs into that
-directory.
-
-Sometimes you'll get the following error when you first start Emacs:
-
-```
-The directory ~/.emacs.d/server is unsafe
-```
-
-To fix it change the owner of the directory `~/.emacs.d/server`:
-  - from Properties select the Tab “Security”,
-  - select the button “Advanced”,
-  - select the Tab “Owner”
-  - change the owner to your account name
-
-Source: [Stack Overflow][so-server-unsafe]
-
-For efficient searches we recommend installing `pt` ([the platinum searcher][]).
-`pt` version 1.7.7 or higher is required.
 
 # Install
-## Default installation
-1. If you have an existing Emacs configuration, back it up first by running the
-   following code in your terminal:
-
-   ```sh
-   cd ~
-   mv .emacs.d .emacs.d.bak
-   mv .emacs .emacs.bak
-   ```
-
-   Don't forget to backup and *remove* the `~/.emacs` file. Otherwise Spacemacs
-   **WILL NOT** be able to load. Because that file prevents Emacs from loading
-   the proper initialization file.
-
-2. Clone the repository with [Git][]:
-
-   ```sh
-   git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
-   ```
-
-   `master` is the stable branch and it is _immutable_, **DO NOT** make any
-   modification to it or you will break the update mechanism. If you want to
-   fork Spacemacs safely, use the `develop` branch where you'll handle updates
-   manually.
-
-   **Note for Windows users**
-   If you use windows, then you'll have to modify the git command by inserting
-   the correct path to your `.emacs.d` folder. The dot before the folder means
-   that it's hidden. You'll have to search for hidden files to find the folder.
-   When you have found the folder, substitute the original path with the correct
-   one. The proper code would look something like this:
-
-   ```sh
-   git clone https://github.com/syl20bnr/spacemacs /path/to/your/.emacs.d
-   ```
-
-3. Install the default fonts
-
-   It's recommended to install [Source Code Pro][] by Adobe, as the default
-   font. It ensures that, for example the symbols on the modeline (bottom bar)
-   looks correct. It's also recommended to use a "Fallback font". These
-   depend on the system:
-
-   - GNU/Linux: *NanumGothic* (package named *fonts-nanum* on Debian, for
-     example)
-   - macOS: *Arial Unicode MS*
-   - Windows: *MS Gothic* or *Lucida Sans Unicode*
-
-   If the modeline doesn't look similar to the
-   [picture at the top of this page](#introduction), then make sure you have the
-   correct fallback font installed.
-
-   If you're running in a terminal then you'll also need to change the terminals
-   font settings.
-
-4. Launch Emacs, and answer the questions in the Dotfile wizard installer. If
-   you are new to Emacs and Spacemacs, then it's fine to just accept the default
-   choices. It's easy to try the other choices later, without having to
-   reinstall Spacemacs. They can be changed in the dotfile `~/.spacemacs`.
-
-   After answering the questions, then Spacemacs starts downloading and
-   installing the packages it requires. When the packages have been installed.
-   Restart Emacs to complete the installation.
-
-**Notes:**
-If you get an error regarding package downloads, then you can try to
-disable the HTTPS protocol by starting Emacs with the `--insecure` argument:
-
-```sh
-emacs --insecure
+``` sh
+git clone --depth 1 https://github.com/hlissner/doom-emacs ~/.emacs.d
+~/.emacs.d/bin/doom install
 ```
 
-Or you can set the `dotspacemacs-elpa-https` variable to `nil` in your
-dotfile `~/.spacemacs`. That will remove the need to start Emacs with the
-`--insecure` argument. You may also want to clear out your `.emacs.d/elpa`
-directory before doing this, so that any corrupted packages you may have
-downloaded will be re-installed.
+Then [read our Getting Started guide][getting-started] to be walked through
+installing, configuring and maintaining Doom Emacs.
 
-`error: Package 'package-build-' is unavailable` may occur due to heavy network
-taffic. You can fix it by setting the `dotspacemacs-elpa-timeout` variable to
-`70` in your dotfile.
+It's a good idea to add `~/.emacs.d/bin` to your `PATH`! Other `bin/doom`
+commands you should know about:
 
-`Warning (bytecomp)` and other compilation warnings are perfectly normal. If
-you're curious, you can find out why these occur [here][compilation-warnings].
++ `doom sync` to synchronize your private config with Doom by installing missing
+  packages, removing orphaned packages, and regenerating caches. Run this
+  whenever you modify your private `init.el` or `packages.el`, or install/remove
+  an Emacs package through your OS package manager (e.g. mu4e or agda).
++ `doom upgrade` to update Doom to the latest release & all installed packages.
++ `doom doctor` to diagnose common issues with your system and config.
++ `doom env` to dump a snapshot of your shell environment to a file that Doom
+  will load at startup. This allows Emacs to inherit your `PATH`, among other
+  things.
++ `doom build` to recompile all installed packages (use this if you up/downgrade
+  Emacs).
 
-If the mode-line turns red then be sure to consult the [FAQ][FAQ.org].
 
-## Alternative installations
-There are currently, two supported, alternative locations, for a Spacemacs
-configuration.
+# Roadmap
+Doom is an active and ongoing project. To make that development more
+transparent, its roadmap (and other concerns) are published across three github
+project boards and a newsletter:
 
-### Modify HOME environment variable
-This solution is ideal for quickly trying Spacemacs without compromising your
-existing configuration. Clone Spacemacs outside the Emacs dotdirectory
-`~/.emacs.d` and modify the HOME environment variable.
++ [Development Roadmap](https://github.com/hlissner/doom-emacs/projects/3):
+  roughly outlines our goals between release milestones and their progress.
++ [Plugins under review](https://github.com/hlissner/doom-emacs/projects/2):
+  lists plugins we are watching and considering for inclusion, and what their
+  status for inclusion is. Please consult this list before requesting new
+  packages/features.
++ [Upstream bugs](https://github.com/hlissner/doom-emacs/projects/5): lists
+  issues that originate from elsewhere, and whether or not we have local
+  workarounds or temporary fixes for them.
++ ~~Doom's newsletter~~ (not finished) will contain changelogs in between
+  releases.
+  
 
-```sh
-mkdir ~/spacemacs
-git clone https://github.com/syl20bnr/spacemacs.git ~/spacemacs/.emacs.d
-HOME=~/spacemacs emacs
-```
+# Getting help
+Emacs is no journey of a mere thousand miles. You _will_ run into problems and
+mysterious errors. When you do, here are some places you can look for help:
 
-Note: If you're using the Fish shell, then you'll need to modify the last
-command to: `env HOME=$HOME/spacemacs emacs`
++ [Our documentation][documentation] covers many use cases.
+  + [The Configuration section][configuration] covers how to configure Doom and
+    its packages.
+  + [The Package Management section][package-management] covers how to install
+    and disable packages.
+  + [This section][bin/doom] explains the `bin/doom` script's most important
+    commands.
+  + [This section][common-mistakes] lists some common configuration mistakes new
+    users make, when migrating a config from another distro or their own.
+  + [This answer][change-theme] shows you how to add your own themes to your
+    private config.
+  + [This answer][change-font] shows you how to change the default font.
+  + Your issue may be documented in the [FAQ].
++ With Emacs built-in help system documentation is a keystroke away:
+  + For functions: <kbd>SPC h f</kbd> or <kbd>C-h f</kbd>
+  + For variables: <kbd>SPC h v</kbd> or <kbd>C-h v</kbd>
+  + For a keybind: <kbd>SPC h k</kbd> or <kbd>C-h k</kbd>
+  + To search available keybinds: <kbd>SPC h b b</kbd> or <kbd>C-h b b</kbd>
++ Run `bin/doom doctor` to detect common issues with your development
+  environment and private config.
++ Check out the [FAQ], in case your question has already been answered.
++ Search [Doom's issue tracker](https://github.com/hlissner/doom-emacs/issues) in case your issue was already
+  reported.
++ Hop on [our Discord server][discord]; it's active and friendly! Keep an eye on
+  the #announcements channel, where I announce breaking updates and releases.
 
-### Modify spacemacs-start-directory variable
-This solution is better suited to "embed" Spacemacs into your own configuration.
-If you've cloned Spacemacs into `~/.emacs.d/spacemacs/`, then drop the following
-lines in the `~/.emacs.d/init.el` file:
 
-```elisp
-(setq spacemacs-start-directory "~/.emacs.d/spacemacs/")
-(load-file (concat spacemacs-start-directory "init.el"))
-```
+# Contribute
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com) 
+[![Elisp styleguide](https://img.shields.io/badge/elisp-style%20guide-purple?style=flat-square)](https://github.com/bbatsov/emacs-lisp-style-guide)
+[![Donate on liberapay](https://img.shields.io/badge/liberapay-donate-1.svg?style=flat-square&logo=liberapay&color=blue)][liberapay]
+[![Donate on paypal](https://img.shields.io/badge/paypal-donate-1?style=flat-square&logo=paypal&color=blue)][paypal]
 
-## Spacemacs logo
-For Ubuntu users, follow this guide to
-[change the logo in Unity][cpaulik-unity-icon].
+Doom is a labor of love and incurable madness, but I'm only one guy. Doom
+wouldn't be where it is today without your help. I welcome contributions of any
+kind!
 
-For Mac users, you need to [download the .icns version of the logo][icon-repository],
-then [change the logo on the Dock][icon-mac-instructions].
++ I :heart: pull requests and bug reports (see the [Contributing
+  Guidelines][contribute])!
++ Don't hesitate to [tell me my Elisp-fu
+  sucks](https://github.com/hlissner/doom-emacs/issues/new), but please tell me
+  why.
++ Hop on [our Discord server][Discord] and say hi! Help others, hang out or talk
+  to me about Emacs, gamedev, programming, physics, pixel art, anime, gaming --
+  anything you like. Nourish this lonely soul.
++ If you'd like to support my work financially, buy me a drink through
+  [liberapay] or [paypal]. My work contends with studies, adventures in indie
+  gamedev and freelance work. Donations help me allocate more time to my Emacs
+  and OSS capers.
+  
+[![](https://sourcerer.io/fame/hlissner/hlissner/doom-emacs/images/0)](https://sourcerer.io/fame/hlissner/hlissner/doom-emacs/links/0)
+[![](https://sourcerer.io/fame/hlissner/hlissner/doom-emacs/images/1)](https://sourcerer.io/fame/hlissner/hlissner/doom-emacs/links/1)
+[![](https://sourcerer.io/fame/hlissner/hlissner/doom-emacs/images/2)](https://sourcerer.io/fame/hlissner/hlissner/doom-emacs/links/2)
+[![](https://sourcerer.io/fame/hlissner/hlissner/doom-emacs/images/3)](https://sourcerer.io/fame/hlissner/hlissner/doom-emacs/links/3)
+[![](https://sourcerer.io/fame/hlissner/hlissner/doom-emacs/images/4)](https://sourcerer.io/fame/hlissner/hlissner/doom-emacs/links/4)
+[![](https://sourcerer.io/fame/hlissner/hlissner/doom-emacs/images/5)](https://sourcerer.io/fame/hlissner/hlissner/doom-emacs/links/5)
+[![](https://sourcerer.io/fame/hlissner/hlissner/doom-emacs/images/6)](https://sourcerer.io/fame/hlissner/hlissner/doom-emacs/links/6)
+[![](https://sourcerer.io/fame/hlissner/hlissner/doom-emacs/images/7)](https://sourcerer.io/fame/hlissner/hlissner/doom-emacs/links/7)
 
-# Update
-Spacemacs shows a notification when a new version is available (only when you
-are on the default `master` branch). If you are on the `develop` branch then
-you'll have to update the Spacemacs repository manually.
 
-## Automatic update (on master branch)
-When a new version is available then a little arrow appears in the mode-line.
+[contribute]: docs/contributing.org
+[discord]: https://discord.gg/qvGgnVx
+[documentation]: docs/index.org
+[faq]: docs/faq.org
+[getting-started]: docs/getting_started.org
+[install]: docs/getting_started.org#install
+[backtrace]: docs/getting_started.org#how-to-extract-a-backtrace-from-an-error
+[configuration]: docs/getting_started.org#configuring-doom
+[package-management]: docs/getting_started.org#package-management
+[bin/doom]: docs/getting_started.org#the-bindoom-utility
+[common-mistakes]: docs/getting_started.org#common-mistakes-when-configuring-doom-emacs
+[change-theme]: docs/faq.org#how-do-i-change-the-theme
+[change-font]: docs/faq.org#how-do-i-change-the-fonts
+[modules]: docs/modules.org
+[popup-system]: modules/ui/popup/README.org
+[screenshots]: https://github.com/hlissner/doom-emacs/tree/screenshots#emacsd-screenshots
 
-Its color depends on the number of versions that have been released since your
-last update. Green means that you have a recent version, orange and red means
-that you have an older version.
+[bindings]: modules/config/default/+evil-bindings.el
+[editorconfig]: http://editorconfig.org/
+[evil-mode]: https://github.com/emacs-evil/evil
+[fd]: https://github.com/sharkdp/fd
+[gnu emacs]: https://www.gnu.org/software/emacs/
+[helm]: https://github.com/emacs-helm/helm
+[ivy]: https://github.com/abo-abo/swiper
+[lsp-mode]: https://github.com/emacs-lsp/lsp-mode
+[eglot]: https://github.com/joaotavora/eglot
+[nix]: https://nixos.org
+[ported-vim-plugins]: modules/editor/evil/README.org#ported-vim-plugins
+[ripgrep]: https://github.com/BurntSushi/ripgrep
+[straight.el]: https://github.com/raxod502/straight.el
+[vim-easymotion]: https://github.com/easymotion/vim-easymotion
+[vim-lion]: https://github.com/tommcdo/vim-lion
+[vim-sneak]: https://github.com/justinmk/vim-sneak
+[vim-unimpaired]: https://github.com/tpope/vim-unimpaired
 
-![powerline_update](doc/img/powerline-update.png)
-
-Click on the arrow to update Spacemacs to the latest version.
-
-## Manual update (on master branch)
-Remove the `<` and `>` angle brackets when you're typing the lines below into
-your shell. And replace the text: "tag version which you are updating to" with a
-tagged version. This page lists the [latest tags][]
-
-```sh
-git fetch
-git reset --hard <tag version which you are updating to>
-```
-
-## On develop branch
-1. Close Emacs and update the git repository:
-
-   ```sh
-   git pull --rebase
-   ```
-
-2. Restart Emacs to complete the upgrade.
-
-## Revert to a specific version
-To revert to a specific version, just checkout the corresponding branch. For
-instance to revert to version `0.200`, type the following command:
-
-   ```sh
-   git checkout origin/release-0.200
-   ```
-
-**After updating Spacemacs (either manually or automatically), then you also
-should check if any updates are available for your packages. On the Spacemacs
-Home Buffer `SPC b h`, click (press `RET`) on the `[Update Packages]` button.**
-
-# Quotes
-[Quote][quote01] by [ashnur](https://github.com/ashnur):
-
-    «I feel that spacemacs is an aircraft carrier and I am playing table tennis
-    on the deck as a freerider.»
-
-[Quote][quote02] by [deuill](https://github.com/deuill):
-
-    «I LOVE SPACEMACS AND MAGIT
-
-     That is all»
-
-# Contributions
-Spacemacs is a community-driven project, it needs _you_ to keep it up to date
-and to propose great and useful configurations for all the things!
-
-Before contributing be sure to consult the
-[contribution guidelines][CONTRIBUTING.org] and [conventions][CONVENTIONS.org].
-
-Here is a throughput graph of the repository for the last few weeks:
-
-[![Throughput Graph](https://graphs.waffle.io/syl20bnr/spacemacs/throughput.svg)](https://waffle.io/syl20bnr/spacemacs/metrics)
-
-# Communities
-- [Gitter Chat]
-- [Stack Exchange]
-- [Reddit]
-
-# License
-The license is GPLv3 for all parts specific to Spacemacs, this includes:
-- the initialization and core files
-- all the layer files
-- the documentation
-
-For the packages shipped in this repository, you can refer to the files header.
-
-[Spacemacs logo][] by [Nasser Alshammari][] released under a
-[Creative Commons Attribution-ShareAlike 4.0 International License.](http://creativecommons.org/licenses/by-sa/4.0/)
-
-# Supporting Spacemacs
-The best way to support Spacemacs is to contribute to it either by reporting
-bugs, helping the community on the [Gitter Chat][] or sending pull requests.
-
-You can show your love for the project by getting cool Spacemacs t-shirts, mugs
-and more in the [Spacemacs Shop][].
-
-If you want to show your support financially, then you can contribute to
-[Bountysource][], or buy a drink for the maintainer by clicking on the
-[Paypal badge](#top).
-
-If you used spacemacs in a project, and you want to show that fact, you can use
-the spacemacs badge: [![Built with Spacemacs](https://cdn.rawgit.com/syl20bnr/spacemacs/442d025779da2f62fc86c2082703697714db6514/assets/spacemacs-badge.svg)](http://spacemacs.org)
-
-- For Markdown:
-
-   ```
-   [![Built with Spacemacs](https://cdn.rawgit.com/syl20bnr/spacemacs/442d025779da2f62fc86c2082703697714db6514/assets/spacemacs-badge.svg)](http://spacemacs.org)
-   ```
-
-- For HTML:
-
-   ```
-   <a href="http://spacemacs.org"><img src="https://cdn.rawgit.com/syl20bnr/spacemacs/442d025779da2f62fc86c2082703697714db6514/assets/spacemacs-badge.svg" /></a>
-   ```
-
-- For Org-mode:
-
-   ```
-   [[http://spacemacs.org][file:https://cdn.rawgit.com/syl20bnr/spacemacs/442d025779da2f62fc86c2082703697714db6514/assets/spacemacs-badge.svg]]
-   ```
-
-Thank you!
-
-[Twitter]: http://i.imgur.com/tXSoThF.png
-[CONTRIBUTING.org]: CONTRIBUTING.org
-[CONVENTIONS.org]: http://spacemacs.org/doc/CONVENTIONS
-[DOCUMENTATION.org]: http://spacemacs.org/doc/DOCUMENTATION
-[QUICK_START.org]: http://spacemacs.org/doc/QUICK_START
-[FAQ.org]: http://spacemacs.org/doc/FAQ
-[VIMUSERS.org]: http://spacemacs.org/doc/VIMUSERS
-[dotfile]: http://spacemacs.org/doc/DOCUMENTATION#dotfile-configuration
-[osx layer]: http://spacemacs.org/layers/+os/osx/README.html
-[Gitter Chat]: https://gitter.im/syl20bnr/spacemacs
-[Gitter Chat IRC server]: https://irc.gitter.im/
-[Homebrew]: http://brew.sh
-[emacs-plus]: https://github.com/d12frosted/homebrew-emacs-plus
-[powerline documentation]: http://spacemacs.org/doc/DOCUMENTATION.html#powerline-separators
-[emacs-for-windows]: http://emacsbinw64.sourceforge.net/
-[emacs-for-windows-stable]: https://sourceforge.net/projects/emacsbinw64/files/release/
-[gzip-for-windows]: http://gnuwin32.sourceforge.net/packages/gzip.htm
-[the platinum searcher]: https://github.com/monochromegane/the_platinum_searcher
-[so-server-unsafe]: http://stackoverflow.com/questions/885793/emacs-error-when-calling-server-start
-[Spacemacs logo]: https://github.com/nashamri/spacemacs-logo
-[Nasser Alshammari]: https://github.com/nashamri
-[compilation-warnings]: https://github.com/quelpa/quelpa/issues/90#issuecomment-137982713
-[cpaulik-unity-icon]: http://splendidabacus.com/posts/2015/03/spacemacs-unity-icon/
-[icon-mac-instructions]: http://www.idownloadblog.com/2014/07/16/how-to-change-app-icon-mac/
-[latest tags]: https://github.com/syl20bnr/spacemacs/tags
-[icon-repository]: https://github.com/nashamri/spacemacs-logo
-[Stack Exchange]: http://emacs.stackexchange.com/questions/tagged/spacemacs
-[Reddit]: https://www.reddit.com/r/spacemacs
-[quote01]: https://gitter.im/syl20bnr/spacemacs?at=568e627a0cdaaa62045a7df6
-[quote02]: https://gitter.im/syl20bnr/spacemacs?at=5768456c6577f032450cfedb
-[build_source]: https://www.gnu.org/software/emacs/manual/html_node/efaq/Installing-Emacs.html
-[Bountysource]: https://salt.bountysource.com/teams/spacemacs
-[Source Code Pro]: https://github.com/adobe-fonts/source-code-pro
-[Spacemacs Shop]: https://shop.spreadshirt.com/spacemacs-shop
-[Git]: https://git-scm.com/downloads
+[liberapay]: https://liberapay.com/hlissner/donate
+[paypal]: https://paypal.me/henriklissner/10
