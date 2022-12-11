@@ -1,5 +1,5 @@
 ;;; lang/org/contrib/roam.el -*- lexical-binding: t; -*-
-;;;###if (featurep! +roam)
+;;;###if (modulep! +roam)
 
 (defvar +org-roam-open-buffer-on-find-file t
   "If non-nil, open the org-roam buffer when opening an org roam file.")
@@ -9,7 +9,7 @@
 ;;; Packages
 
 (use-package! org-roam
-  :hook (org-load . org-roam-mode)
+  :hook (org-load . +org-init-roam-maybe-h)
   :hook (org-roam-backlinks-mode . turn-on-visual-line-mode)
   :commands (org-roam-buffer-toggle-display
              org-roam-dailies-find-date
@@ -46,22 +46,30 @@
          :desc "Find yesterday"     "y" #'org-roam-dailies-find-yesterday
          :desc "Find directory"     "." #'org-roam-dailies-find-directory))
   :config
+  (defun +org-init-roam-maybe-h ()
+    "Activate `org-roam-mode'. If it fails, fail gracefully."
+    (unless (with-demoted-errors "ORG ROAM ERROR: %s"
+              (org-roam-mode +1)
+              t)
+      (message "To try reinitializing org-roam, run 'M-x org-roam-mode'")
+      (org-roam-mode -1)))
+
   (setq org-roam-directory
         (file-name-as-directory
          (file-truename
           (expand-file-name (or org-roam-directory "roam")
                             org-directory)))
         org-roam-db-location (or org-roam-db-location
-                                 (concat doom-etc-dir "org-roam.db"))
-        org-roam-verbose nil   ; https://youtu.be/fn4jIlFwuLU
+                                 (concat doom-data-dir "org-roam.db"))
         ;; Make org-roam buffer sticky; i.e. don't replace it when opening a
         ;; file with an *-other-window command.
         org-roam-buffer-window-parameters '((no-delete-other-windows . t))
+        org-roam-link-use-custom-faces 'everywhere
         org-roam-completion-everywhere t
         org-roam-completion-system
-        (cond ((featurep! :completion helm) 'helm)
-              ((featurep! :completion ivy) 'ivy)
-              ((featurep! :completion ido) 'ido)
+        (cond ((modulep! :completion helm) 'helm)
+              ((modulep! :completion ivy) 'ivy)
+              ((modulep! :completion ido) 'ido)
               ('default)))
 
   ;; Normally, the org-roam buffer doesn't open until you explicitly call

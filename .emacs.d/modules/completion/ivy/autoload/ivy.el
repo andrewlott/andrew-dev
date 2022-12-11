@@ -281,7 +281,7 @@ The point of this is to avoid Emacs locking up indexing massive file trees."
            (replace-regexp-in-string
             "[! |]" (lambda (substr)
                       (cond ((and (string= substr " ")
-                                  (not (featurep! +fuzzy)))
+                                  (not (modulep! +fuzzy)))
                              "  ")
                             ((string= substr "|")
                              "\\\\\\\\|")
@@ -289,13 +289,13 @@ The point of this is to avoid Emacs locking up indexing massive file trees."
             (rxt-quote-pcre (doom-thing-at-point-or-region)))))
      directory args
      (or prompt
-         (format "rg%s [%s]: "
-                 args
+         (format "Search project [%s]: "
                  (cond ((equal directory default-directory)
                         "./")
                        ((equal directory project-root)
                         (projectile-project-name))
-                       ((file-relative-name directory project-root))))))))
+                       ((file-relative-name directory project-root)))
+                 (string-trim args))))))
 
 ;;;###autoload
 (defun +ivy/project-search (&optional arg initial-query directory)
@@ -322,7 +322,11 @@ If ARG (universal argument), include all files, even hidden or compressed ones."
 (defun +ivy/compile ()
   "Execute a compile command from the current buffer's directory."
   (interactive)
-  (counsel-compile default-directory))
+  ;; Fix unhelpful 'Couldn't find project root' error
+  (letf! (defun counsel--compile-root ()
+           (ignore-errors
+             (funcall counsel--compile-root)))
+    (counsel-compile default-directory)))
 
 ;;;###autoload
 (defun +ivy/project-compile ()

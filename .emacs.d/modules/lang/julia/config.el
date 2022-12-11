@@ -5,6 +5,12 @@
   :config
   (set-repl-handler! 'julia-mode #'+julia/open-repl)
 
+  (when (modulep! +lsp)
+    (add-hook 'julia-mode-local-vars-hook #'lsp! 'append))
+
+  (when (modulep! +tree-sitter)
+    (add-hook 'julia-mode-local-vars-hook #'tree-sitter! 'append))
+
   ;; Borrow matlab.el's fontification of math operators. From
   ;; <https://web.archive.org/web/20170326183805/https://ogbe.net/emacsconfig.html>
   (dolist (mode '(julia-mode ess-julia-mode))
@@ -48,7 +54,7 @@
   :config
   (set-popup-rule! "^\\*julia.*\\*$" :ttl nil)
 
-  (when (featurep! :ui workspaces)
+  (when (modulep! :ui workspaces)
     (defadvice! +julia--namespace-repl-buffer-to-workspace-a (&optional executable-key suffix)
       "Name for a Julia REPL inferior buffer. Uses workspace name for doom emacs"
       :override #'julia-repl--inferior-buffer-name
@@ -66,9 +72,27 @@
 
 
 (use-package! lsp-julia
-  :when (featurep! +lsp)
+  :when (modulep! +lsp)
+  :unless (modulep! :tools lsp +eglot)
   :after lsp-mode
+  :preface (setq lsp-julia-default-environment nil)
+  :init
+  ;; If no environment is set, then auto-detect one in ~/.julia/environments/,
+  ;; falling back to `lsp-julia-default-environment's default.
+  (unless lsp-julia-default-environment
+    (setq lsp-julia-default-environment
+          (or (car (last (doom-glob "~/.julia/environments/v*")))
+              "~/.julia/environments/v1.6"))))
+
+
+(use-package! eglot-jl
+  :when (modulep! +lsp)
+  :when (modulep! :tools lsp +eglot)
+  :after eglot
   :preface
-  (setq lsp-julia-default-environment "~/.julia/environments/v1.0")
-  (when (featurep! +lsp)
-    (add-hook 'julia-mode-local-vars-hook #'lsp!)))
+  ;; Prevent auto-install of LanguageServer.jl
+  (setq eglot-jl-language-server-project "~/.julia/environments/v1.6")
+  :init
+  ;; Prevent timeout while installing LanguageServer.jl
+  (setq-hook! 'julia-mode-hook eglot-connect-timeout (max eglot-connect-timeout 60))
+  :config (eglot-jl-init))

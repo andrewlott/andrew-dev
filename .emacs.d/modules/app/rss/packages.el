@@ -1,5 +1,7 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; app/rss/packages.el
 
-(package! elfeed :pin "362bbe5b38353d033c5299f621fea39e2c75a5e0")
-(package! elfeed-org :pin "77b6bbf222487809813de260447d31c4c59902c9")
+(package! elfeed :pin "162d7d545ed41c27967d108c04aa31f5a61c8e16")
+(package! elfeed-goodies :pin "c9d9cd196746add3010d74f43b5c9866562f39fb")
+(when (modulep! +org)
+  (package! elfeed-org :pin "d28c858303e60dcb3a6eb18ea85ee3cb9e3dd623"))

@@ -15,8 +15,24 @@
         centaur-tabs-cycle-scope 'tabs)
 
   :config
-  (add-hook '+doom-dashboard-mode-hook #'centaur-tabs-local-mode)
-  (add-hook '+popup-buffer-mode-hook #'centaur-tabs-local-mode))
+  (add-hook! '(+doom-dashboard-mode-hook +popup-buffer-mode-hook)
+    (defun +tabs-disable-centaur-tabs-mode-maybe-h ()
+      "Disable `centaur-tabs-mode' in current buffer."
+      (when (centaur-tabs-mode-on-p)
+        (centaur-tabs-local-mode))))
+
+  (defadvice! +tabs--fixed-centaur-tabs-project-name-a ()
+    :override #'centaur-tabs-project-name
+    (let ((project-name (cdr (project-current))))
+      ;; In earlier versions of project.el, `project-current' returned a cons
+      ;; cell (VCBACKEND . PROJECTROOT). In more recent versions it returns
+      ;; (TYPE VCBACKEND PROJECTROOT), which throws an error.
+      ;; REVIEW This should be upstreamed.
+      (when (listp project-name)
+        (setq project-name (cadr project-name)))
+      (if project-name
+          (format "Project: %s" (expand-file-name project-name))
+        centaur-tabs-common-group-name))))
 
 
 ;; TODO tab-bar-mode (emacs 27)

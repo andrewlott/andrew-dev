@@ -6,31 +6,31 @@
 (package! yard-mode :pin "ba74a47463b0320ae152bd42a7dd7aeecd7b5748")
 
 ;; REPL
-(package! inf-ruby :pin "b0124578db09b64902c8ca981b02e74bec92ef36")
-(when (featurep! :completion company)
+(package! inf-ruby :pin "dbf4386bac12f1733257db6105e3f1fca05ffb79")
+(when (modulep! :completion company)
   (package! company-inf-ruby :pin "fe3e4863bc971fbb81edad447efad5795ead1b17"))
 
 ;; Programming environment
-(package! rubocop :pin "03bf15558a6eb65e4f74000cab29412efd46660e")
-(package! robe :pin "f04dcc7f8d4c14ad4761bd534bf58a49a5f2957f")
+(package! rubocop :pin "f5fd18aa810c3d3269188cbbd731ddc09006f8f5")
+(package! robe :pin "11207bd549a5a78e3a4d70265c3715990dcdab71")
 
 ;; Project tools
 (package! bundler :pin "43efb6be4ed118b06d787ce7fbcffd68a31732a7")
-(package! rake :pin "9c204334b03b4e899fadae6e59c20cf105404128")
+(package! rake :pin "452ea0caca33376487103c64177c295ed2960cca")
 
 ;; Environment management
-(when (featurep! +rbenv)
+(when (modulep! +rbenv)
   (package! rbenv :pin "2ea1a5bdc1266caef1dd77700f2c8f42429b03f1"))
-(when (featurep! +rvm)
-  (package! rvm :pin "b2498a4a6952a32301544e103b31dc3b8df271ee"))
-(when (featurep! +chruby)
+(when (modulep! +rvm)
+  (package! rvm :pin "c1f2642434b0f68d9baa0687127079ecd884ba12"))
+(when (modulep! +chruby)
   (package! chruby :pin "42bc6d521f832eca8e2ba210f30d03ad5529788f"))
 
 ;; Testing frameworks
-(package! rspec-mode :pin "f1029cad2a8d9fd096e9a0f1ae9e7d7e2c8bd1ec")
+(package! rspec-mode :pin "4215ff1f2d1cee24a144ff08297276dc7b971c25")
 (package! minitest :pin "ddd152c990a528ad09a696bfad23afa4330ea4d7")
 
 ;; Rails
-(when (featurep! +rails)
-  (package! projectile-rails :pin "7a256b1b1444fe0001f97095d99252e946dd9777")
-  (package! inflections :pin "e4f1372cf22e811faca52fc86bdd5d817498a4d8"))
+(when (modulep! +rails)
+  (package! projectile-rails :pin "772f4766b5d1159a395b93459f07d5f1f6c02f4e")
+  (package! inflections :pin "55caa66a7cc6e0b1a76143fd40eff38416928941"))

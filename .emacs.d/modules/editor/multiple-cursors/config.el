@@ -11,16 +11,20 @@
 ;;; Packages
 
 (use-package! evil-multiedit
-  :when (featurep! :editor evil)
+  :when (modulep! :editor evil)
+  :defer t)
+
+
+(use-package! iedit
+  :when (modulep! :completion vertico)
   :defer t
-  :config
-  (map! :map (evil-multiedit-state-map evil-multiedit-insert-state-map)
-        "C-n" #'evil-multiedit-next
-        "C-p" #'evil-multiedit-prev))
+  :init
+  ;; Fix conflict with embark.
+  (setq iedit-toggle-key-default nil))
 
 
 (use-package! evil-mc
-  :when (featurep! :editor evil)
+  :when (modulep! :editor evil)
   :commands (evil-mc-make-cursor-here
              evil-mc-make-all-cursors
              evil-mc-undo-all-cursors
@@ -49,10 +53,29 @@
   (defvar evil-mc-key-map (make-sparse-keymap))
 
   :config
-  (global-evil-mc-mode +1)
+  ;; HACK evil-mc's design is bizarre. Its variables and hooks are lazy loaded
+  ;;   rather than declared at top-level, some hooks aren't defined or
+  ;;   documented, it's a bit initializer-function drunk, and its minor modes
+  ;;   are intended to be perpetually active -- even when no cursors are active
+  ;;   (causing #6021). I undo all of that here.
+  (evil-mc-define-vars)
+  (evil-mc-initialize-vars)
+  (add-hook 'evil-mc-before-cursors-created #'evil-mc-pause-incompatible-modes)
+  (add-hook 'evil-mc-before-cursors-created #'evil-mc-initialize-active-state)
+  (add-hook 'evil-mc-after-cursors-deleted  #'evil-mc-teardown-active-state)
+  (add-hook 'evil-mc-after-cursors-deleted  #'evil-mc-resume-incompatible-modes)
+  (advice-add #'evil-mc-initialize-hooks :override #'ignore)
+  (advice-add #'evil-mc-teardown-hooks :override #'evil-mc-initialize-vars)
+  (advice-add #'evil-mc-initialize-active-state :before #'turn-on-evil-mc-mode)
+  (advice-add #'evil-mc-teardown-active-state :after #'turn-off-evil-mc-mode)
+  (defadvice! +multiple-cursors--dont-reinit-vars-a (fn &rest args)
+    :around #'evil-mc-mode
+    (letf! ((#'evil-mc-initialize-vars #'ignore))
+      (apply fn args)))
 
   ;; REVIEW This is tremendously slow on macos and windows for some reason.
-  (setq evil-mc-enable-bar-cursor (not (or IS-MAC IS-WINDOWS)))
+  (setq evil-mc-enable-bar-cursor (not (or IS-MAC
+                                           IS-WINDOWS)))
 
   (after! smartparens
     ;; Make evil-mc cooperate with smartparens better
@@ -92,7 +115,7 @@
 
   ;; HACK Allow these commands to be repeated by prefixing them with a numerical
   ;;      argument. See gabesoft/evil-mc#110
-  (defadvice! +multiple-cursors--make-repeatable-a (orig-fn)
+  (defadvice! +multiple-cursors--make-repeatable-a (fn)
     :around '(evil-mc-make-and-goto-first-cursor
               evil-mc-make-and-goto-last-cursor
               evil-mc-make-and-goto-prev-cursor
@@ -104,7 +127,7 @@
               evil-mc-skip-and-goto-prev-match
               evil-mc-skip-and-goto-next-match)
     (dotimes (i (if (integerp current-prefix-arg) current-prefix-arg 1))
-      (funcall orig-fn)))
+      (funcall fn)))
 
   ;; If we're entering insert mode, it's a good bet that we want to start using
   ;; our multiple cursors
@@ -131,14 +154,15 @@
   (evil-add-command-properties '+multiple-cursors:evil-mc :evil-mc t)
 
   (map! :map evil-mc-key-map
+        :nv "g." nil
         :nv "C-n" #'evil-mc-make-and-goto-next-cursor
-        :nv "C-N" #'evil-mc-make-and-goto-last-cursor
+        :nv "C-S-n" #'evil-mc-make-and-goto-last-cursor
         :nv "C-p" #'evil-mc-make-and-goto-prev-cursor
-        :nv "C-P" #'evil-mc-make-and-goto-first-cursor))
+        :nv "C-S-p" #'evil-mc-make-and-goto-first-cursor))
 
 
 (after! multiple-cursors-core
-  (setq mc/list-file (concat doom-etc-dir "mc-lists.el"))
+  (setq mc/list-file (concat doom-data-dir "mc-lists.el"))
 
   ;; Can't use `mc/cmds-to-run-once' because mc-lists.el overwrites it
   (add-to-list 'mc--default-cmds-to-run-once 'swiper-mc)
@@ -148,7 +172,7 @@
   ;; mc doesn't play well with evil, this attempts to assuage some of its
   ;; problems so that any plugins that depend on multiple-cursors (which I have
   ;; no control over) can still use it in relative safety.
-  (when (featurep! :editor evil)
+  (when (modulep! :editor evil)
     (evil-define-key* '(normal emacs) mc/keymap [escape] #'mc/keyboard-quit)
 
     (defvar +mc--compat-evil-prev-state nil)
@@ -173,7 +197,10 @@
         (when +mc--compat-evil-prev-state
           (unwind-protect
               (cl-case +mc--compat-evil-prev-state
-                ((normal visual) (evil-force-normal-state))
+                ;; For `evil-multiedit', marked occurrences aren't saved after
+                ;; exiting mc, so we should return to normal state anyway
+                ((normal visual multiedit multiedit-insert)
+                 (evil-force-normal-state))
                 (t (message "Don't know how to handle previous state: %S"
                             +mc--compat-evil-prev-state)))
             (setq +mc--compat-evil-prev-state nil)

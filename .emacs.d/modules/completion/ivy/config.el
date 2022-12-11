@@ -22,11 +22,11 @@ results buffer.")
   :hook (doom-first-input . ivy-mode)
   :init
   (let ((standard-search-fn
-         (if (featurep! +prescient)
+         (if (modulep! +prescient)
              #'+ivy-prescient-non-fuzzy
            #'ivy--regex-plus))
         (alt-search-fn
-         (if (featurep! +fuzzy)
+         (if (modulep! +fuzzy)
              #'ivy--regex-fuzzy
            ;; Ignore order for non-fuzzy searches by default
            #'ivy--regex-ignore-order)))
@@ -45,6 +45,9 @@ results buffer.")
     [remap switch-to-buffer-other-window] #'+ivy/switch-buffer-other-window
     [remap persp-switch-to-buffer]        #'+ivy/switch-workspace-buffer
     [remap evil-show-jumps]               #'+ivy/jump-list)
+
+  ;; Fix #4886: otherwise our remaps are overwritten
+  (setq ivy-mode-map (make-sparse-keymap))
   :config
   ;; The default sorter is much to slow and the default for `ivy-sort-max-size'
   ;; is way too big (30,000). Turn it down so big repos affect project
@@ -61,7 +64,6 @@ results buffer.")
         ivy-fixed-height-minibuffer t
         ivy-read-action-function #'ivy-hydra-read-action
         ivy-read-action-format-function #'ivy-read-action-format-columns
-        projectile-completion-system 'ivy
         ;; don't show recent files in switch-buffer
         ivy-use-virtual-buffers nil
         ;; ...but if that ever changes, show their full path
@@ -114,7 +116,7 @@ results buffer.")
   :config
   (setq ivy-rich-parse-remote-buffer nil)
 
-  (when (featurep! +icons)
+  (when (modulep! +icons)
     (cl-pushnew '(+ivy-rich-buffer-icon)
                 (cadr (plist-get ivy-rich-display-transformers-list
                                  'ivy-switch-buffer))
@@ -158,7 +160,7 @@ results buffer.")
 
 
 (use-package! all-the-icons-ivy
-  :when (featurep! +icons)
+  :when (modulep! +icons)
   :after ivy
   :config
   ;; `all-the-icons-ivy' is incompatible with ivy-rich's switch-buffer
@@ -186,7 +188,7 @@ results buffer.")
     [remap describe-function]        #'counsel-describe-function
     [remap describe-variable]        #'counsel-describe-variable
     [remap describe-symbol]          #'counsel-describe-symbol
-    [remap evil-ex-registers]        #'counsel-evil-registers
+    [remap evil-show-registers]      #'counsel-evil-registers
     [remap evil-show-marks]          #'counsel-mark-ring
     [remap execute-extended-command] #'counsel-M-x
     [remap find-file]                #'counsel-find-file
@@ -201,7 +203,7 @@ results buffer.")
     [remap recentf-open-files]       #'counsel-recentf
     [remap set-variable]             #'counsel-set-variable
     [remap swiper]                   #'counsel-grep-or-swiper
-    [remap unicode-chars-list-chars] #'counsel-unicode-char
+    [remap insert-char]              #'counsel-unicode-char
     [remap yank-pop]                 #'counsel-yank-pop)
   :config
   (set-popup-rule! "^\\*ivy-occur" :size 0.35 :ttl 0 :quit nil)
@@ -209,10 +211,10 @@ results buffer.")
   ;; HACK Fix an issue where `counsel-projectile-find-file-action' would try to
   ;;      open a candidate in an occur buffer relative to the wrong buffer,
   ;;      causing it to fail to find the file we want.
-  (defadvice! +ivy--run-from-ivy-directory-a (orig-fn &rest args)
+  (defadvice! +ivy--run-from-ivy-directory-a (fn &rest args)
     :around #'counsel-projectile-find-file-action
     (let ((default-directory (ivy-state-directory ivy-last)))
-      (apply orig-fn args)))
+      (apply fn args)))
 
   ;; Don't use ^ as initial input. Set this here because `counsel' defines more
   ;; of its own, on top of the defaults.
@@ -226,7 +228,8 @@ results buffer.")
 
   ;; Integrate with `helpful'
   (setq counsel-describe-function-function #'helpful-callable
-        counsel-describe-variable-function #'helpful-variable)
+        counsel-describe-variable-function #'helpful-variable
+        counsel-descbinds-function #'helpful-callable)
 
   ;; Decorate `doom/help-custom-variable' results the same way as
   ;; `counsel-describe-variable' (adds value and docstring columns).
@@ -285,10 +288,13 @@ results buffer.")
     :override #'counsel--find-return-list
     (cl-destructuring-bind (find-program . args)
         (cond ((when-let (fd (executable-find (or doom-projectile-fd-binary "fd") t))
-                 (append (list fd "-H" "--color=never" "--type" "file" "--type" "symlink" "--follow")
+                 (append (list fd "--hidden" "--type" "file" "--type" "symlink" "--follow" "--color=never")
+                         (cl-loop for dir in projectile-globally-ignored-directories
+                                  collect "--exclude"
+                                  collect dir)
                          (if IS-WINDOWS '("--path-separator=/")))))
               ((executable-find "rg" t)
-               (append (list "rg" "--files" "--follow" "--color=never" "--hidden" "-g!.git" "--no-messages")
+               (append (list "rg" "--hidden" "--files" "--follow" "--color=never" "--no-messages")
                        (cl-loop for dir in projectile-globally-ignored-directories
                                 collect "--glob"
                                 collect (concat "!" dir))
@@ -329,7 +335,7 @@ results buffer.")
   ;; no highlighting visited files; slows down the filtering
   (ivy-set-display-transformer #'counsel-projectile-find-file nil)
 
-  (when (featurep! +prescient)
+  (when (modulep! +prescient)
     (setq counsel-projectile-sort-files t)))
 
 
@@ -339,7 +345,7 @@ results buffer.")
 
 
 (use-package! ivy-posframe
-  :when (featurep! +childframe)
+  :when (modulep! +childframe)
   :hook (ivy-mode . ivy-posframe-mode)
   :config
   (setq ivy-fixed-height-minibuffer nil
@@ -363,31 +369,36 @@ results buffer.")
 
 
 (use-package! flx
-  :when (featurep! +fuzzy)
-  :unless (featurep! +prescient)
+  :when (modulep! +fuzzy)
+  :unless (modulep! +prescient)
   :defer t  ; is loaded by ivy
+  :preface (when (or (not (modulep! +fuzzy))
+                     (modulep! +prescient))
+             (setq ivy--flx-featurep nil))
   :init (setq ivy-flx-limit 10000))
 
 (use-package! ivy-avy
   :after ivy)
 
 (use-package! ivy-prescient
-  :when (featurep! +prescient)
+  :when (modulep! +prescient)
   :hook (ivy-mode . ivy-prescient-mode)
   :hook (ivy-prescient-mode . prescient-persist-mode)
   :commands +ivy-prescient-non-fuzzy
   :init
   (setq prescient-filter-method
-        (if (featurep! +fuzzy)
+        (if (modulep! +fuzzy)
             '(literal regexp initialism fuzzy)
           '(literal regexp initialism)))
   :config
+  ;; REVIEW Remove when radian-software/prescient.el#102 is resolved
+  (add-to-list 'ivy-sort-functions-alist '(ivy-resume))
   (setq ivy-prescient-sort-commands
-        '(:not swiper swiper-isearch ivy-switch-buffer
-          lsp-ivy-workspace-symbol ivy-resume ivy--restore-session
-          counsel-grep counsel-git-grep counsel-rg counsel-ag
-          counsel-ack counsel-fzf counsel-pt counsel-imenu
-          counsel-yank-pop counsel-recentf counsel-buffer-or-recentf)
+        '(:not swiper swiper-isearch ivy-switch-buffer lsp-ivy-workspace-symbol
+          ivy-resume ivy--restore-session counsel-grep counsel-git-grep
+          counsel-rg counsel-ag counsel-ack counsel-fzf counsel-pt counsel-imenu
+          counsel-yank-pop counsel-recentf counsel-buffer-or-recentf
+          counsel-outline counsel-org-goto counsel-jq)
         ivy-prescient-retain-classic-highlighting t)
   (defun +ivy-prescient-non-fuzzy (str)
     (let ((prescient-filter-method '(literal regexp)))

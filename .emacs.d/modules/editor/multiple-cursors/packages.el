@@ -2,11 +2,8 @@
 ;;; editor/multiple-cursors/packages.el
 
 (cond
- ((featurep! :editor evil)
-  ;; REVIEW Broken in 8abf2c1f4f0ade64cbb06c8f47055f04ab83e8d6 (latest commit at
-  ;;        time of writing). Revisit later.
-  (package! iedit :pin "77eb0a1e2e44b453e4ebf4c38409affa353f5139")
-  (package! evil-multiedit :pin "9f271e0e6048297692f80ed6c5ae8994ac523abc")
-  (package! evil-mc :pin "f04fb17f35f2722f2ac93c862b4450bb8e5b739a"))
+ ((modulep! :editor evil)
+  (package! evil-multiedit :pin "23b53bc8743fb82a8854ba907b1d277374c93a79")
+  (package! evil-mc :pin "63fd2fe0c213a4cc31c464d246f92931c4cb720f"))
 
- ((package! multiple-cursors :pin "a9d7764f80b241978f3d4e76bc981ef10bab5d70")))
+ ((package! multiple-cursors :pin "aae47aebc0ae829211fa1e923232715d8e327b36")))

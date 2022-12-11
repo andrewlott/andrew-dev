@@ -8,11 +8,11 @@
 ;;   is restored.
 
 (defvar +eshell-config-dir
-  (expand-file-name "eshell/" doom-private-dir)
+  (expand-file-name "eshell/" doom-user-dir)
   "Where to store eshell configuration files, as opposed to
 `eshell-directory-name', which is where Doom will store temporary/data files.")
 
-(defvar eshell-directory-name (concat doom-etc-dir "eshell")
+(defvar eshell-directory-name (concat doom-data-dir "eshell")
   "Where to store temporary/data files, as opposed to `eshell-config-dir',
 which is where Doom will store eshell configuration files.")
 
@@ -26,13 +26,15 @@ buffer.")
 (defvar +eshell-aliases
   '(("q"  "exit")           ; built-in
     ("f"  "find-file $1")
-    ("ff" "find-file $1")
+    ("ff" "find-file-other-window $1")
     ("d"  "dired $1")
     ("bd" "eshell-up $1")
     ("rg" "rg --color=always $*")
     ("l"  "ls -lh $*")
     ("ll" "ls -lah $*")
+    ("git" "git --no-pager $*")
     ("gg" "magit-status")
+    ("cdp" "cd-to-project")
     ("clear" "clear-scrollback")) ; more sensible than default
   "An alist of default eshell aliases, meant to emulate useful shell utilities,
 like fasd and bd. Note that you may overwrite these in your
@@ -84,7 +86,7 @@ You should use `set-eshell-alias!' to change this.")
   (add-hook 'eshell-mode-hook #'smartparens-mode)
 
   ;; Persp-mode/workspaces integration
-  (when (featurep! :ui workspaces)
+  (when (modulep! :ui workspaces)
     (add-hook 'persp-activated-functions #'+eshell-switch-workspace-fn)
     (add-hook 'persp-before-switch-functions #'+eshell-save-workspace-fn))
 
@@ -98,6 +100,10 @@ You should use `set-eshell-alias!' to change this.")
       (set-display-table-slot standard-display-table 0 ?\ )))
 
   (add-hook 'eshell-mode-hook #'hide-mode-line-mode)
+
+  ;; Remove hscroll-margin in shells, otherwise you get jumpiness when the
+  ;; cursor comes close to the left/right edges of the window.
+  (setq-hook! 'eshell-mode-hook hscroll-margin 0)
 
   ;; Don't auto-write our aliases! Let us manage our own `eshell-aliases-file'
   ;; or configure `+eshell-aliases' via elisp.
@@ -145,7 +151,7 @@ You should use `set-eshell-alias!' to change this.")
         [remap evil-window-split]   #'+eshell/split-below
         [remap evil-window-vsplit]  #'+eshell/split-right
         ;; To emulate terminal keybinds
-        "C-l"   #'eshell/clear
+        "C-l"   (cmd! (eshell/clear-scrollback) (eshell-emit-prompt))
         (:localleader
          "b" #'eshell-insert-buffer-name
          "e" #'eshell-insert-envvar

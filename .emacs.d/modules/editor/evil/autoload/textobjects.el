@@ -46,21 +46,23 @@ This excludes the protocol and querystring."
 ;;;###autoload (autoload '+evil:inner-any-quote "editor/evil/autoload/textobjects" nil nil)
 (evil-define-text-object +evil:inner-any-quote (count &optional beg end type)
   "Select the closest inner quote."
+  (require 'evil-textobj-anyblock)
   (let ((evil-textobj-anyblock-blocks
          '(("'" . "'")
            ("\"" . "\"")
            ("`" . "`")
            ("‘" . "’")
            ("“" . "”"))))
-    (evil-textobj-anyblock-inner-block count beg end type)))
+    (evil-textobj-anyblock--make-textobj beg end type count nil)))
 
 ;;;###autoload (autoload '+evil:outer-any-quote "editor/evil/autoload/textobjects" nil nil)
 (evil-define-text-object +evil:outer-any-quote (count &optional beg end type)
   "Select the closest outer quote."
+  (require 'evil-textobj-anyblock)
   (let ((evil-textobj-anyblock-blocks
          '(("'" . "'")
            ("\"" . "\"")
            ("`" . "`")
            ("‘" . "’")
            ("“" . "”"))))
-    (evil-textobj-anyblock-a-block count beg end type)))
+    (evil-textobj-anyblock--make-textobj beg end type count t)))

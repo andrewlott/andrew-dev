@@ -14,13 +14,14 @@
 (use-package! clojure-mode
   :hook (clojure-mode . rainbow-delimiters-mode)
   :config
-  (when (featurep! +lsp)
+  (when (modulep! +lsp)
     (add-hook! '(clojure-mode-local-vars-hook
                  clojurec-mode-local-vars-hook
                  clojurescript-mode-local-vars-hook)
-      (defun +clojure-disable-lsp-indentation-h ()
-        (setq-local lsp-enable-indentation nil))
-      #'lsp!)
+               :append
+               (defun +clojure-disable-lsp-indentation-h ()
+                 (setq-local lsp-enable-indentation nil))
+               #'lsp!)
     (after! lsp-clojure
       (dolist (m '(clojure-mode
                    clojurec-mode
@@ -34,17 +35,26 @@
   :hook (clojure-mode-local-vars . cider-mode)
   :init
   (after! clojure-mode
-    (set-repl-handler! 'clojure-mode #'+clojure/open-repl :persist t)
+    (set-repl-handler! '(clojure-mode clojurec-mode) #'+clojure/open-repl :persist t)
     (set-repl-handler! 'clojurescript-mode #'+clojure/open-cljs-repl :persist t)
-    (set-eval-handler! '(clojure-mode clojurescript-mode) #'cider-eval-region))
+    (set-eval-handler! '(clojure-mode clojurescript-mode clojurec-mode) #'cider-eval-region))
+
+  ;; HACK Fix radian-software/radian#446: CIDER tries to calculate the frame's
+  ;;   background too early; sometimes before the initial frame has been
+  ;;   initialized, causing errors.
+  (defvar cider-docview-code-background-color nil)
+  (defvar cider-stacktrace-frames-background-color nil)
+  (add-transient-hook! #'cider-docview-fontify-code-blocks (cider--docview-adapt-to-theme))
+  (add-transient-hook! #'cider-stacktrace-render-cause     (cider--stacktrace-adapt-to-theme))
   :config
   (add-hook 'cider-mode-hook #'eldoc-mode)
-  (set-lookup-handlers! '(cider-mode cider-repl-mode)
-    :definition #'+clojure-cider-lookup-definition
-    :documentation #'cider-doc)
+  (unless (modulep! +lsp)
+    (set-lookup-handlers! '(cider-mode cider-repl-mode)
+      :definition #'+clojure-cider-lookup-definition
+      :documentation #'cider-doc))
   (set-popup-rules!
     '(("^\\*cider-error*" :ignore t)
-      ("^\\*cider-repl" :quit nil)
+      ("^\\*cider-repl" :quit nil :ttl nil)
       ("^\\*cider-repl-history" :vslot 2 :ttl nil)))
 
   (setq nrepl-hide-special-buffers t
@@ -72,10 +82,17 @@
         ;; See https://github.com/clojure-emacs/cider/issues/1872
         cider-repl-pop-to-buffer-on-connect 'display-only)
 
-  ;; Error messages emitted from CIDER is silently funneled into *nrepl-server*
-  ;; rather than the *cider-repl* buffer. How silly. We might want to see that
-  ;; stuff and who's going to check *nrepl-server* on every startup? I've got a
-  ;; better idea: we copy these errors into the *cider-repl* buffer.
+  (when (modulep! +lsp)
+    (setq cider-eldoc-display-for-symbol-at-point nil
+          cider-font-lock-dynamically nil)
+    (add-hook! 'cider-mode-hook
+      (defun +clojure--cider-disable-completion ()
+        "Use lsp completion instead of cider."
+        (remove-hook 'completion-at-point-functions #'cider-complete-at-point t))))
+
+  ;; UX: CIDER's error messages get quietly funneled into *nrepl-server*. That
+  ;; sort of information would be more helpful displayed front and center when
+  ;; opening a *cider-repl*.
   (add-hook! 'cider-connected-hook
     (defun +clojure--cider-dump-nrepl-server-log-h ()
       "Copy contents of *nrepl-server* to beginning of *cider-repl*."
@@ -94,12 +111,55 @@
         (evil-make-overriding-map cider--debug-mode-map 'normal)
         (evil-normalize-keymaps))))
 
+  (when (modulep! :ui modeline +light)
+    (defvar-local cider-modeline-icon nil)
+
+    (defun +clojure--cider-set-modeline (face label)
+      "Update repl icon on modeline with cider information."
+      (setq cider-modeline-icon (concat
+                                 " "
+                                 (+modeline-format-icon 'faicon "terminal" "" face label -0.0575)
+                                 " "))
+      (add-to-list 'global-mode-string
+                   '(t (:eval cider-modeline-icon))
+                   'append))
+
+    (add-hook! '(cider-connected-hook
+                 cider-disconnected-hook
+                 cider-mode-hook)
+      (defun +clojure--cider-connected-update-modeline ()
+        "Update modeline with cider connection state."
+        (let* ((connected (cider-connected-p))
+               (face (if connected 'warning 'breakpoint-disabled))
+               (label (if connected "Cider connected" "Cider disconnected")))
+          (+clojure--cider-set-modeline face label))))
+
+    (add-hook! '(cider-before-eval-hook)
+      (defun +clojure--cider-before-eval-hook-update-modeline ()
+        "Update modeline with cider state before eval."
+        (+clojure--cider-set-modeline 'warning "Cider evaluating")))
+
+    (add-hook! '(cider-after-eval-done-hook)
+      (defun +clojure--cider-after-eval-done-hook-update-modeline ()
+        "Update modeline with cider state after eval."
+        (+clojure--cider-set-modeline 'success "Cider syncronized")))
+
+    (add-hook! '(cider-file-loaded-hook)
+      (defun +clojure--cider-file-loaded-update-modeline ()
+        "Update modeline with cider file loaded state."
+        (+clojure--cider-set-modeline 'success "Cider syncronized"))))
+
+  ;; Ensure that CIDER is used for sessions in org buffers.
+  (when (modulep! :lang org)
+    (after! ob-clojure
+      (setq! org-babel-clojure-backend 'cider)))
+
   ;; The CIDER welcome message obscures error messages that the above code is
   ;; supposed to be make visible.
   (setq cider-repl-display-help-banner nil)
 
   (map! (:localleader
-          (:map (clojure-mode-map clojurescript-mode-map)
+          (:map (clojure-mode-map clojurescript-mode-map clojurec-mode-map)
             "'"  #'cider-jack-in-clj
             "\"" #'cider-jack-in-cljs
             "c"  #'cider-connect-clj
@@ -161,7 +221,7 @@
               "s" #'cider-test-run-ns-tests-with-filters
               "t" #'cider-test-run-test)))
 
-        (:when (featurep! :editor evil +everywhere)
+        (:when (modulep! :editor evil +everywhere)
           :map cider-repl-mode-map
           :i [S-return] #'cider-repl-newline-and-indent
           :i [M-return] #'cider-repl-return
@@ -180,35 +240,21 @@
           :i "U"  #'cider-repl-history-undo-other-window)))
 
 
-(after! cider-doc
-  ;; Fixes raxod502/radian#446: CIDER tries to do color calculations when it's
-  ;; loaded, sometimes too early, causing errors. Better to wait until something
-  ;; is actually rendered.
-  (setq cider-docview-code-background-color nil)
-
-  (defadvice! +clojure--defer-color-calculation-a (&rest _)
-    "Set `cider-docview-code-background-color'.
-This is needed because we have ripped out the code that would normally set it
-(since that code will run during early init, which is a problem)."
-    :before #'cider-docview-fontify-code-blocks
-    (setq cider-docview-code-background-color (cider-scale-background-color)))
-
-  ;; HACK Disable cider's advice on these; and hope no one else is using these
-  ;;      old-style advice.
-  (ad-deactivate #'enable-theme)
-  (ad-deactivate #'disable-theme))
-
-
 (use-package! clj-refactor
   :hook (clojure-mode . clj-refactor-mode)
   :config
-  (set-lookup-handlers! 'clj-refactor-mode
-    :references #'cljr-find-usages)
+  (unless (modulep! +lsp)
+    (set-lookup-handlers! 'clj-refactor-mode
+      :references #'cljr-find-usages))
+  (when (modulep! +lsp)
+    (setq cljr-add-ns-to-blank-clj-files nil))
   (map! :map clojure-mode-map
         :localleader
         :desc "refactor" "R" #'hydra-cljr-help-menu/body))
 
 
+;; clojure-lsp already uses clj-kondo under the hood
 (use-package! flycheck-clj-kondo
-  :when (featurep! :checkers syntax)
+  :when (and (modulep! :checkers syntax)
+             (not (modulep! +lsp)))
   :after flycheck)

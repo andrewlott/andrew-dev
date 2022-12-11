@@ -18,7 +18,10 @@ don't have a :trigger property in `+file-templates-alist'.")
     ("/docker-compose\\.yml$" :mode yaml-mode)
     ("/Makefile$"             :mode makefile-gmake-mode)
     ;; elisp
-    ("/.dir-locals.el$")
+    ("/\\.dir-locals\\.el$")
+    ("/\\.doomrc$"
+     :trigger "__doomrc"
+     :mode emacs-lisp-mode)
     ("/packages\\.el$" :when +file-templates-in-emacs-dirs-p
      :trigger "__doom-packages"
      :mode emacs-lisp-mode)
@@ -60,7 +63,6 @@ don't have a :trigger property in `+file-templates-alist'.")
     ("/bower\\.json$"          :trigger "__bower.json" :mode json-mode)
     ("/gulpfile\\.js$"         :trigger "__gulpfile.js" :mode js-mode)
     ("/webpack\\.config\\.js$" :trigger "__webpack.config.js" :mode js-mode)
-    ("\\.js\\(?:on\\|hintrc\\)$" :mode json-mode)
     ;; Lua
     ("/main\\.lua$" :trigger "__main.lua" :mode love-mode)
     ("/conf\\.lua$" :trigger "__conf.lua" :mode love-mode)
@@ -72,9 +74,8 @@ don't have a :trigger property in `+file-templates-alist'.")
     ("/shell\\.nix$" :trigger "__shell.nix")
     (nix-mode)
     ;; Org
-    ("/README\\.org$"
-     :when +file-templates-in-emacs-dirs-p
-     :trigger "__doom-readme"
+    (doom-docs-org-mode
+     :trigger +file-templates-insert-doom-docs-fn
      :mode org-mode)
     (org-journal-mode :ignore t)
     (org-mode)
@@ -95,7 +96,7 @@ don't have a :trigger property in `+file-templates-alist'.")
     ("/Rakefile$"         :trigger "__Rakefile" :mode ruby-mode :project t)
     (ruby-mode)
     ;; Rust
-    ("/Cargo.toml$" :trigger "__Cargo.toml" :mode rust-mode)
+    ("/Cargo\\.toml$" :trigger "__Cargo.toml" :mode rust-mode)
     ("/main\\.rs$" :trigger "__main.rs" :mode rust-mode)
     ;; Slim
     ("/\\(?:index\\|main\\)\\.slim$" :mode slim-mode)
@@ -115,7 +116,7 @@ information.")
 
 (defun +file-templates-in-emacs-dirs-p (file)
   "Returns t if FILE is in Doom or your private directory."
-  (or (file-in-directory-p file doom-private-dir)
+  (or (file-in-directory-p file doom-user-dir)
       (file-in-directory-p file doom-emacs-dir)))
 
 (defun +file-template-p (rule)
@@ -143,20 +144,16 @@ must be non-read-only, empty, and there must be a rule in
        (not (member (substring (buffer-name) 0 1) '("*" " ")))
        (not (file-exists-p buffer-file-name))
        (not (buffer-modified-p))
+       (null (buffer-base-buffer))
        (when-let (rule (cl-find-if #'+file-template-p +file-templates-alist))
          (apply #'+file-templates--expand rule))))
-
-(defadvice! +file-templates-inhibit-in-org-capture-a (orig-fn &rest args)
-  :around #'org-capture
-  (let ((+file-templates-inhibit t))
-    (apply orig-fn args)))
 
 
 ;;
 ;;; Bootstrap
 
 (after! yasnippet
-  (if (featurep! :editor snippets)
+  (if (modulep! :editor snippets)
       (add-to-list 'yas-snippet-dirs '+file-templates-dir 'append #'eq)
     (setq yas-prompt-functions (delq #'yas-dropdown-prompt yas-prompt-functions)
           yas-snippet-dirs '(+file-templates-dir))

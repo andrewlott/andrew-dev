@@ -5,8 +5,10 @@
 (package! vc-annotate :built-in t)
 (package! smerge-mode :built-in t)
 
-(package! browse-at-remote :pin "fadf99d6d8e891f3b112e36c772e0eea0b9bc7f2")
-(package! git-commit :pin "c3505b6934b8d5133d1bdb7e3d6ace147532ccc1")
-(package! git-timemachine :pin "8d675750e921a047707fcdc36d84f8439b19a907")
-(package! gitconfig-mode :pin "14adca24eb6b0b4e311ad144c5d41972c6b044b2")
-(package! gitignore-mode :pin "14adca24eb6b0b4e311ad144c5d41972c6b044b2")
+(package! browse-at-remote :pin "cef26f2c063f2473af42d0e126c8613fe2f709e4")
+(package! git-commit :pin "8a0cc83eff98489d3685b8585afdcebbb47c1393")
+(package! git-timemachine
+  ;; The original lives on codeberg.org; which has uptime issues.
+  :recipe (:host github :repo "emacsmirror/git-timemachine")
+  :pin "ca09684e94767cc0b2339b77b778b4de4f9d104f")
+(package! git-modes :pin "eca3bb42ea8abed9ef8549b2ac91bbea445c5bb5")

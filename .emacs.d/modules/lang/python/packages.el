@@ -3,40 +3,37 @@
 
 ;; Major modes
 (package! pip-requirements :pin "216cd1690f80cc965d4ae47b8753fc185f778ff6")
-(when (featurep! +cython)
-  (package! cython-mode :pin "17e03b8658a07b6d6da49300b39b57ed9c59ddb1")
-  (when (featurep! :checkers syntax)
+(when (modulep! +cython)
+  (package! cython-mode :pin "b2015596b38df4b7b2978d87385da20d69e4e822")
+  (when (modulep! :checkers syntax)
     (package! flycheck-cython :pin "ecc4454d35ab5317ab66a04406f36f0c1dbc0b76")))
 
 ;; LSP
-(when (featurep! +lsp)
-  (unless (featurep! :tools lsp +eglot)
-    (if (featurep! +pyright)
-        (package! lsp-pyright :pin "71ff088ac4c93b0edd012f305a3dfd1602c5d21e")
-      (package! lsp-python-ms :pin "5470ada6cde6e68fe6ce13ff1146c89c3bae0cc8"))))
+(when (modulep! +lsp)
+  (unless (modulep! :tools lsp +eglot)
+    (if (modulep! +pyright)
+        (package! lsp-pyright :pin "2fa2c897659909ba9804baba72a108578d007677")
+      (package! lsp-python-ms :pin "f8e7c4bcaefbc3fd96e1ca53d17589be0403b828"))))
 
 ;; Programming environment
-(package! anaconda-mode :pin "b1875a5d0ec9885c1c42558c126b93ee6bcedaa6")
-(when (featurep! :completion company)
+(package! anaconda-mode :pin "ca8edbaa7662d97e4a4416ec9a8d743863303911")
+(when (modulep! :completion company)
   (package! company-anaconda :pin "da1566db41a68809ef7f91ebf2de28118067c89b"))
 
 ;; Environment management
-(package! pipenv :pin "f516a1a8677a6a1ce9683056e9f77b1e785e8431")
-(package! pyvenv :pin "9b3678bc29192d2dba64df90fbdb17393ef8d877")
-(when (featurep! +pyenv)
+(package! pipenv :pin "3af159749824c03f59176aff7f66ddd6a5785a10")
+(package! pyvenv :pin "31ea715f2164dd611e7fc77b26390ef3ca93509b")
+(when (modulep! +pyenv)
   (package! pyenv-mode :pin "b818901b8eac0e260ced66a6a5acabdbf6f5ba99"))
-(when (featurep! +conda)
-  (package! conda :pin "dce431b25f5a13af58cc7cacfa7968b5a888609c"))
-(when (featurep! +poetry)
-  (package! poetry :pin "d5163fe065239bb7b46ed8b3ff3b85b1f3229af3"))
+(when (modulep! +conda)
+  (package! conda :pin "cb9544e8f7d6c642b7fd8c1ecc2cf4fc7370c352"))
+(when (modulep! +poetry)
+  (package! poetry :pin "5a8575bc78d7fc5a39b2ba4665a909e36961fceb"))
 
 ;; Testing frameworks
-(package! nose
-  ;; REVIEW Remove this when emacsmirror/epkgs updates its emacsattic index
-  :recipe (:host github :repo "emacsattic/nose")
-  :pin "f8528297519eba911696c4e68fa88892de9a7b72")
-(package! python-pytest :pin "3fadf1f8bc363d57c54eedd1bf98e6d9db9f0a62")
+(package! nose :pin "f8528297519eba911696c4e68fa88892de9a7b72")
+(package! python-pytest :pin "33c921adaa6c9c8f7cceba2342114c6b406e0d7c")
 
 ;; Import managements
-(package! pyimport :pin "a6f63cf7ed93f0c0f7c207e6595813966f8852b9")
+(package! pyimport :pin "c006a5fd0e5c9e297aa2ad71b2f02f463286b5e3")
 (package! py-isort :pin "e67306f459c47c53a65604e4eea88a3914596560")

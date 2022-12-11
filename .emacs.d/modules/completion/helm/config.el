@@ -1,14 +1,14 @@
 ;;; completion/helm/config.el -*- lexical-binding: t; -*-
 
 ;; Posframe (requires +childframe)
-(defvar +helm-posframe-handler #'+helm-poshandler-frame-center-near-bottom-fn
-  "The function that determines the location of the childframe. It should return
-a cons cell representing the X and Y coordinates. See
+(defvar +helm-posframe-handler #'posframe-poshandler-frame-center
+  "The function that determines the location of the childframe.
+It should return a cons cell representing the X and Y coordinates. See
 `posframe-poshandler-frame-center' as a reference.")
 
 (defvar +helm-posframe-text-scale 1
-  "The text-scale to use in the helm childframe. Set to nil for no scaling. Can
-be negative.")
+  "The text-scale to use in the helm childframe. Set to nil for no scaling.
+Can be negative.")
 
 (defvar +helm-posframe-parameters
   '((internal-border-width . 8)
@@ -16,8 +16,7 @@ be negative.")
     (height . 0.35)
     (min-width . 80)
     (min-height . 16))
-  "TODO")
-
+  "Default parameters for the helm childframe.")
 
 ;;
 ;;; Packages
@@ -64,17 +63,17 @@ be negative.")
         ;; disable special behavior for left/right, M-left/right keys.
         helm-ff-lynx-style-map nil)
 
-  (when (featurep! :editor evil +everywhere)
+  (when (modulep! :editor evil +everywhere)
     (setq helm-default-prompt-display-function #'+helm--set-prompt-display))
 
   :init
-  (when (featurep! +childframe)
+  (when (modulep! +childframe)
     ;; If this is set to 'iconify-top-level then Emacs will be minimized upon
     ;; helm completion.
     (setq iconify-child-frame 'make-invisible)
     (setq helm-display-function #'+helm-posframe-display-fn))
 
-  (let ((fuzzy (featurep! +fuzzy)))
+  (let ((fuzzy (modulep! +fuzzy)))
     (setq helm-apropos-fuzzy-match fuzzy
           helm-bookmark-show-location fuzzy
           helm-buffers-fuzzy-matching fuzzy
@@ -97,10 +96,7 @@ be negative.")
     ;; `completion-styles', since that would be overly intrusive. E.g., it
     ;; results in `company-capf' returning far to many completion candidates.
     ;; Instead, append those styles so that they act as a fallback.
-    (add-to-list 'completion-styles
-                 (if EMACS27+
-                     (if fuzzy 'flex 'helm)
-                   (if fuzzy 'helm-flex 'helm)) t))
+    (add-to-list 'completion-styles (if fuzzy 'flex 'helm) t))
   :config
   (set-popup-rule! "^\\*helm" :vslot -100 :size 0.22 :ttl nil)
 
@@ -121,7 +117,7 @@ be negative.")
     (advice-add fn :around #'doom-use-helpful-a)))
 
 (use-package! helm-flx
-  :when (featurep! +fuzzy)
+  :when (modulep! +fuzzy)
   :hook (helm-mode . helm-flx-mode)
   :config (helm-flx-mode +1))
 
@@ -158,7 +154,7 @@ be negative.")
 
 
 (use-package! helm-org
-  :when (featurep! :lang org)
+  :when (modulep! :lang org)
   :defer t
   :init
   (after! helm-mode
@@ -173,7 +169,6 @@ be negative.")
              helm-projectile-switch-project
              helm-projectile-switch-to-buffer)
   :init
-  (setq projectile-completion-system 'helm)
   (defvar helm-projectile-find-file-map (make-sparse-keymap))
   :config
   (set-keymap-parent helm-projectile-find-file-map helm-map))
@@ -189,3 +184,12 @@ be negative.")
 
 (use-package! helm-descbinds
   :hook (helm-mode . helm-descbinds-mode))
+
+
+(use-package! helm-icons
+  :after helm
+  :when (modulep! +icons)
+  :init
+  (setq helm-icons-provider 'all-the-icons)
+  :config
+  (helm-icons-enable))

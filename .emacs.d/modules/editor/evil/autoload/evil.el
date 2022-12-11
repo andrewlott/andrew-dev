@@ -6,7 +6,7 @@
   (declare (indent defun))
   (after! evil
     (if (listp modes)
-        (dolist (mode (doom-enlist modes))
+        (dolist (mode (ensure-list modes))
           (evil-set-initial-state mode state))
       (evil-set-initial-state modes state))))
 
@@ -69,10 +69,7 @@ the only window, use evil-window-move-* (e.g. `evil-window-move-far-left')."
         (with-selected-window that-window
           (switch-to-buffer (doom-fallback-buffer)))
         (setq that-buffer (window-buffer that-window)))
-      (with-selected-window this-window
-        (switch-to-buffer that-buffer))
-      (with-selected-window that-window
-        (switch-to-buffer this-buffer))
+      (window-swap-states this-window that-window)
       (select-window that-window))))
 
 ;;;###autoload
@@ -91,6 +88,22 @@ the only window, use evil-window-move-* (e.g. `evil-window-move-far-left')."
 (defun +evil/window-move-down ()
   "Swap windows downward."
   (interactive) (+evil--window-swap 'down))
+
+;;;###autoload
+(defun +evil/window-split-and-follow ()
+  "Split current window horizontally, then focus new window.
+If `evil-split-window-below' is non-nil, the new window isn't focused."
+  (interactive)
+  (let ((evil-split-window-below (not evil-split-window-below)))
+    (call-interactively #'evil-window-split)))
+
+;;;###autoload
+(defun +evil/window-vsplit-and-follow ()
+  "Split current window vertically, then focus new window.
+If `evil-vsplit-window-right' is non-nil, the new window isn't focused."
+  (interactive)
+  (let ((evil-vsplit-window-right (not evil-vsplit-window-right)))
+    (call-interactively #'evil-window-vsplit)))
 
 ;;;###autoload (autoload '+evil:apply-macro "editor/evil/autoload/evil" nil t)
 (evil-define-operator +evil:apply-macro (beg end)

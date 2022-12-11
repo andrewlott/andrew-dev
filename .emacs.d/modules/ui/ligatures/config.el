@@ -64,7 +64,7 @@ font.")
     ;; (?x . "x") ; Also tries to match the x in 0xDEADBEEF
     ;; (regexp-opt '("<!--" "<$" "<$>" "<*" "<*>" "<**>" "<+" "<+>" "<-" "<--" "<---" "<->" "<-->" "<--->" "</" "</>" "<<" "<<-" "<<<" "<<=" "<=" "<=<" "<==" "<=>" "<===>" "<>" "<|" "<|>" "<~" "<~~" "<." "<.>" "<..>"))
     (?<  . "\\(?:<\\(?:!--\\|\\$>\\|\\*\\(?:\\*?>\\)\\|\\+>\\|-\\(?:-\\(?:->\\|[>-]\\)\\|[>-]\\)\\|\\.\\(?:\\.?>\\)\\|/>\\|<[<=-]\\|=\\(?:==>\\|[<=>]\\)\\||>\\|~~\\|[$*+./<=>|~-]\\)\\)")
-    (?=  . "\\(?:=\\(?:/=\\|:=\\|<<\\|=[=>]\\|>>\\|[=>]\\)\\)")               ; (regexp-opt '("=/=" "=:=" "=<<" "==" "===" "==>" "=>" "=>>"))
+    (?=  . "\\(?:=\\(?:/=\\|:=\\|<[<=]\\|=[=>]\\|>[=>]\\|[=>]\\)\\)")         ; (regexp-opt '("=/=" "=:=" "=<<" "==" "===" "==>" "=>" "=>>" "=>=" "=<="))
     (?>  . "\\(?:>\\(?:->\\|=>\\|>[=>-]\\|[:=>-]\\)\\)")                      ; (regexp-opt '(">-" ">->" ">:" ">=" ">=>" ">>" ">>-" ">>=" ">>>"))
     (??  . "\\(?:\\?[.:=?]\\)")                                               ; (regexp-opt '("??" "?." "?:" "?="))
     (?\[ . "\\(?:\\[\\(?:|]\\|[]|]\\)\\)")                                    ; (regexp-opt '("[]" "[|]" "[|"))
@@ -87,7 +87,8 @@ string starting with the character contained in car.
 This variable is used only if you built Emacs with Harfbuzz on a version >= 28")
 
 (defvar +ligatures-in-modes
-  '(not special-mode comint-mode eshell-mode term-mode vterm-mode)
+  '(not special-mode comint-mode eshell-mode term-mode vterm-mode Info-mode
+        elfeed-search-mode elfeed-show-mode)
   "List of major modes where ligatures should be enabled.
 
   If t, enable it everywhere (except `fundamental-mode').
@@ -137,17 +138,24 @@ with `prettify-symbols-mode'. This variable controls where these are enabled.
 See `+ligatures-extras-in-modes' to control what major modes this function can
 and cannot run in."
   (when after-init-time
-    (when (+ligatures--enable-p +ligatures-in-modes)
-      (if (boundp '+ligature--composition-table)
-          (setq-local composition-function-table +ligature--composition-table)
-        (run-hooks '+ligatures--init-font-hook)
-        (setq +ligatures--init-font-hook nil)))
-    (when (and (featurep! +extra)
-               (+ligatures--enable-p +ligatures-extras-in-modes))
-      (prependq! prettify-symbols-alist (alist-get major-mode +ligatures-extra-alist)))
-    (when prettify-symbols-alist
-      (if prettify-symbols-mode (prettify-symbols-mode -1))
-      (prettify-symbols-mode +1))))
+    (let ((in-mode-p
+           (+ligatures--enable-p +ligatures-in-modes))
+          (in-mode-extras-p
+           (and (modulep! +extra)
+                (+ligatures--enable-p +ligatures-extras-in-modes))))
+      (when in-mode-p
+        (if (boundp '+ligature--composition-table)
+            (setq-local composition-function-table +ligature--composition-table)
+          (run-hooks '+ligatures--init-font-hook)
+          (setq +ligatures--init-font-hook nil)))
+      (when in-mode-extras-p
+        (prependq! prettify-symbols-alist
+                   (alist-get major-mode +ligatures-extra-alist)))
+      (when (and (or in-mode-p in-mode-extras-p)
+                 prettify-symbols-alist)
+        (when prettify-symbols-mode
+          (prettify-symbols-mode -1))
+        (prettify-symbols-mode +1)))))
 
 
 ;;
@@ -171,7 +179,7 @@ and cannot run in."
 
  ;; Harfbuzz and Mac builds do not need font-specific ligature support
  ;; if they are above emacs-27.
- ((and EMACS28+
+ ((and (> emacs-major-version 27)
        (or (featurep 'ns)
            (string-match-p "HARFBUZZ" system-configuration-features))
        (featurep 'composite))  ; Emacs loads `composite' at startup
@@ -206,7 +214,7 @@ and cannot run in."
 
   (defvar +ligatures--font-alist ())
 
-  (cond ((featurep! +fira)         (load! "+fira"))
-        ((featurep! +iosevka)      (load! "+iosevka"))
-        ((featurep! +hasklig)      (load! "+hasklig"))
-        ((featurep! +pragmata-pro) (load! "+pragmata-pro")))))
+  (cond ((modulep! +fira)         (load! "+fira"))
+        ((modulep! +iosevka)      (load! "+iosevka"))
+        ((modulep! +hasklig)      (load! "+hasklig"))
+        ((modulep! +pragmata-pro) (load! "+pragmata-pro")))))

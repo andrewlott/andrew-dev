@@ -1,23 +1,26 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; lang/latex/packages.el
 
-(package! auctex :pin "fb062a364fbc7d791707ff574b0f0a7f4c7a7269")
-(package! adaptive-wrap :pin "91e939b48a8129f696f45a7a3963fe09cbfa3a2d")
+(package! auctex
+  :recipe (:files ("*.el" "*.info" "dir"
+                   "doc" "etc" "images" "latex" "style"))
+  :pin "830e40a0639aedc6c362a3a01e160aaa8246bb99")
+(package! adaptive-wrap :pin "0d5b4a07de76d87dd64333a566a8a0a845f2b9f0")
 (package! latex-preview-pane :pin "5297668a89996b50b2b62f99cba01cc544dbed2e")
-(when (featurep! :editor evil +everywhere)
-  (package! evil-tex :pin "ac313efb22d621c093d8d30233bd7dc8b4cc54b4"))
+(when (modulep! :editor evil +everywhere)
+  (package! evil-tex :pin "0fa85c3fc88d96621002b5a1b79efcc06776642f"))
 
-;; Optional module features:
+;; Optional module features.
 
-(when (featurep! +latexmk)
+(when (modulep! +latexmk)
   (package! auctex-latexmk :pin "4d353522650d7685acbf1d38f7dbc504f734bd84"))
 
-(when (featurep! +cdlatex)
-  (package! cdlatex :pin "adf96bab0bbf28f65c882c0874f1c14fdb216bd8"))
+(when (modulep! +cdlatex)
+  (package! cdlatex :pin "8e963c68531f75e459e8ebe7a34fd3ba9d3729a0"))
 
-;; Features according to other user selected options
+;; Features according to other user selected options.
 
-(when (featurep! :completion company)
+(when (modulep! :completion company)
   (package! company-auctex :pin "9400a2ec7459dde8cbf1a5d50dfee4e300ed7e18")
-  (package! company-reftex :pin "291c283c8a015fd7cbaa99f836e1a721f1e2c832")
-  (package! company-math :pin "a796053590012e6a15c8b527b521ffc15d137bd0"))
+  (package! company-reftex :pin "42eb98c6504e65989635d95ab81b65b9d5798e76")
+  (package! company-math :pin "45778f5731c97a21a83e3b965cbde42018709afd"))

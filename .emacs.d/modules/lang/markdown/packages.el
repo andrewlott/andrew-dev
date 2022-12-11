@@ -1,14 +1,14 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; lang/markdown/packages.el
 
-(package! markdown-mode :pin "dcad5572a30fce51b97963d3c869cce227c223a1")
-(package! markdown-toc :pin "9565eeaa1d26bc0ab83eb65bd30470888f724044")
-(package! edit-indirect :pin "bdc8f542fe8430ba55f9a24a7910639d4c434422")
+(package! markdown-mode :pin "1f709778ac7990f4a07fdf11fe37bc6541810b29")
+(package! markdown-toc :pin "3d724e518a897343b5ede0b976d6fb46c46bcc01")
+(package! edit-indirect :pin "f80f63822ffae78de38dbe72cacaeb1aaa96c732")
 
-(when (featurep! +grip)
-  (package! grip-mode :pin "91da46f29c455c3cd24b2a6b20ff2db2c4ce8cd6"))
+(when (modulep! +grip)
+  (package! grip-mode :pin "6d6ddbe0af39c82a633add8499488ad8dc9e1daa"))
 
-(when (featurep! :editor evil +everywhere)
+(when (modulep! :editor evil +everywhere)
   (package! evil-markdown
     :recipe (:host github :repo "Somelauw/evil-markdown")
-    :pin "064fe9b4767470472356d20bdd08e2f30ebbc9ac"))
+    :pin "8e6cc68af83914b2fa9fd3a3b8472573dbcef477"))

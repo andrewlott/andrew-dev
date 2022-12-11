@@ -1,12 +1,8 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; lang/haskell/packages.el
 
-(package! haskell-mode :pin "0d39c847fddddc5b76fe3c706e34ab45439760bc")
+(package! haskell-mode :pin "90503413f4cdb0ed26871e39c4e6e2552b57f7db")
 
-(when (featurep! +dante)
-  (package! dante :pin "e2acbf6dd37818cbf479c9c3503d8a59192e34af")
-  (package! attrap :pin "9c881548debcf59b8aadda0ef4abca3c9a68dd80"))
-(when (or (and (featurep! +lsp)
-               (not (featurep! :tools lsp +eglot)))
-          (featurep! +ghcide))
-  (package! lsp-haskell :pin "4d85cb3693d893ec34d8a0be9794d468a0a28b7b"))
+(when (and (modulep! +lsp)
+           (not (modulep! :tools lsp +eglot)))
+  (package! lsp-haskell :pin "485c1148ce4d27030bb95b21c7289809294e7d31"))

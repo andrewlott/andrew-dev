@@ -11,7 +11,7 @@
     (compile cmd)))
 
 (defun +go--run-tests (args)
-  (let ((cmd (concat "go test " args)))
+  (let ((cmd (concat "go test -test.v " args)))
     (setq +go-test-last (concat "cd " default-directory ";" cmd))
     (+go--spawn cmd)))
 
@@ -38,7 +38,19 @@
   (if (string-match "_test\\.go" buffer-file-name)
       (save-excursion
         (re-search-backward "^func[ ]+\\(([[:alnum:]]*?[ ]?[*]?[[:alnum:]]+)[ ]+\\)?\\(Test[[:alnum:]_]+\\)(.*)")
-        (+go--run-tests (concat "-run" "='" (match-string-no-properties 2) "'")))
+        (+go--run-tests (concat "-run" "='^\\Q" (match-string-no-properties 2) "\\E$'")))
+    (error "Must be in a _test.go file")))
+
+;;;###autoload
+(defun +go/test-file ()
+  (interactive)
+  (if (string-match "_test\\.go" buffer-file-name)
+      (save-excursion
+        (goto-char (point-min))
+        (let ((func-list))
+          (while (re-search-forward "^func[ ]+\\(([[:alnum:]]*?[ ]?[*]?[[:alnum:]]+)[ ]+\\)?\\(Test[[:alnum:]_]+\\)(.*)" nil t)
+            (push (match-string-no-properties 2) func-list))
+          (+go--run-tests (concat "-run" "='^(" (string-join func-list "|")  ")$'"))))
     (error "Must be in a _test.go file")))
 
 ;;;###autoload
@@ -52,7 +64,7 @@
   (if (string-match "_test\\.go" buffer-file-name)
       (save-excursion
         (re-search-backward "^func[ ]+\\(([[:alnum:]]*?[ ]?[*]?[[:alnum:]]+)[ ]+\\)?\\(Benchmark[[:alnum:]_]+\\)(.*)")
-        (+go--run-tests (concat "-test.run=NONE -test.bench" "='" (match-string-no-properties 2) "'")))
+        (+go--run-tests (concat "-test.run=NONE -test.bench" "='^\\Q" (match-string-no-properties 2) "\\E$'")))
     (error "Must be in a _test.go file")))
 
 

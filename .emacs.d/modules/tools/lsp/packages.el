@@ -1,13 +1,16 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; tools/lsp/packages.el
 
-(if (featurep! +eglot)
+(if (modulep! +eglot)
     (progn
-      (package! eglot :pin "398b81eeec44b35b39480a38f1b1357bc8550a1c")
-      (package! project :pin "2e7afbe7d0c67c13f86c908ae13f2694308d6ab8"))
-  (package! lsp-mode :pin "3ca25e61b419c4419a345d43594338b8f2ff295e")
-  (package! lsp-ui :pin "732992aa41bb78b7341e28c980817de488b7a317")
-  (when (featurep! :completion ivy)
-    (package! lsp-ivy :pin "c70ee8b54357c56d1b972393ee53e57a2e545fbb"))
-  (when (featurep! :completion helm)
-    (package! helm-lsp :pin "fc09aa0903ee6abe4955e9a6062dcea667ebff5a")))
+      (package! eglot :pin "e501275e06952889056268dabe08ccd0dbaf23e5")
+      (when (modulep! :completion vertico)
+        (package! consult-eglot :pin "0da8801dd8435160ce1f62ad8066bd52e38f5cbd")))
+  (package! lsp-mode :pin "a3b3c15359405f442fc51a2db09e503ca3b39f3d")
+  (package! lsp-ui :pin "3cd7cc61273341023b863dcf45906ac9142fd1aa")
+  (when (modulep! :completion ivy)
+    (package! lsp-ivy :pin "9ecf4dd9b1207109802bd1882aa621eb1c385106"))
+  (when (modulep! :completion helm)
+    (package! helm-lsp :pin "c2c6974dadfac459b1a69a1217441283874cea92"))
+  (when (modulep! :completion vertico)
+    (package! consult-lsp :pin "58b541476203fa68e9e7682531f2a10e11780857")))

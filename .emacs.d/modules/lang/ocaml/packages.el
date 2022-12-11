@@ -1,24 +1,25 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; lang/ocaml/packages.el
 
-(package! tuareg :pin "ccde45bbc292123ec20617f1af7f7e19f7481545")
+(package! tuareg :pin "ad8a688b7e2aeeafc320a845f86cdd9aa7c971ce")
 
-(unless (featurep! +lsp)
-  (package! merlin :pin "28193d5ff238be44556e0344c1c0207b77c2bb55")
+(unless (modulep! +lsp)
+  (package! merlin :pin "be753d9412387aedcf32aba88a1be9bcd33d97ba")
   (package! merlin-eldoc :pin "db7fab1eddfe34781b7e79694f8923b285698032")
-  (when (featurep! :checkers syntax)
-    (package! flycheck-ocaml :pin "8707a7bf545a8639a6a5c600a98d9a2ea1487dc9")))
+  (package! merlin-company :pin "be753d9412387aedcf32aba88a1be9bcd33d97ba")
+  (when (modulep! :checkers syntax)
+    (package! flycheck-ocaml :pin "77f8ddbd9bfc3a11957ac7ec7e45d5fa9179b192")))
 
-(package! ocp-indent :pin "9e26c0a2699b7076cebc04ece59fb354eb84c11c")
+(package! ocp-indent :pin "7c4d434132cebc15a8213c8be9e7323692eb0a2b")
 
-(when (featurep! :tools eval)
-  (package! utop :pin "7bc5117d3449fc19f5c706a6decfdb2a30984507"))
+(when (modulep! :tools eval)
+  (package! utop :pin "bbd9a6ed45c8de8d50adcd5d4d845bdba212db63"))
 
-(when (featurep! :editor format)
+(when (modulep! :editor format)
   (package! ocamlformat
     :recipe (:host github :repo "ocaml-ppx/ocamlformat" :files ("emacs/*.el"))
-    :pin "860266b706602e482b9dac8de74a3f8555b0e2fc"))
+    :pin "9cbd8150c28f70ba6315c347a833a4ac8c85c481"))
 
 (package! dune
   :recipe (:host github :repo "ocaml/dune" :files ("editor-integration/emacs/*.el"))
-  :pin "4d097cdba97c9dca8f06edd0e948e154b39e68bc")
+  :pin "3df932f7f91ea68c3fee789f133b4aa8f9bea807")

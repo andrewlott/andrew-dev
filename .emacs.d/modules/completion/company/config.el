@@ -1,14 +1,23 @@
 ;;; completion/company/config.el -*- lexical-binding: t; -*-
 
 (use-package! company
-  :commands company-complete-common company-manual-begin company-grab-line
+  :commands (company-complete-common
+             company-complete-common-or-cycle
+             company-manual-begin
+             company-grab-line)
   :hook (doom-first-input . global-company-mode)
   :init
   (setq company-minimum-prefix-length 2
         company-tooltip-limit 14
         company-tooltip-align-annotations t
         company-require-match 'never
-        company-global-modes '(not erc-mode message-mode help-mode gud-mode)
+        company-global-modes
+        '(not erc-mode
+              circe-mode
+              message-mode
+              help-mode
+              gud-mode
+              vterm-mode)
         company-frontends
         '(company-pseudo-tooltip-frontend  ; always show candidates in overlay tooltip
           company-echo-metadata-frontend)  ; show selected candidate docs in echo area
@@ -18,10 +27,9 @@
         company-backends '(company-capf)
 
         ;; These auto-complete the current selection when
-        ;; `company-auto-complete-chars' is typed. This is too magical. We
+        ;; `company-auto-commit-chars' is typed. This is too magical. We
         ;; already have the much more explicit RET and TAB.
-        company-auto-complete nil
-        company-auto-complete-chars nil
+        company-auto-commit nil
 
         ;; Only search the current buffer for `company-dabbrev' (a backend that
         ;; suggests text your open buffers). This prevents Company from causing
@@ -32,10 +40,13 @@
         company-dabbrev-ignore-case nil
         company-dabbrev-downcase nil)
 
+  (when (modulep! +tng)
+    (add-hook 'global-company-mode-hook #'company-tng-mode))
+
   :config
-  (when (featurep! :editor evil)
+  (when (modulep! :editor evil)
     (add-hook 'company-mode-hook #'evil-normalize-keymaps)
-    (unless (featurep! +childframe)
+    (unless (modulep! +childframe)
       ;; Don't persist company popups when switching back to normal mode.
       ;; `company-box' aborts on mode switch so it doesn't need this.
       (add-hook! 'evil-normal-state-entry-hook
@@ -55,8 +66,6 @@
 
   (add-hook 'after-change-major-mode-hook #'+company-init-backends-h 'append)
 
-  (when (featurep! +tng)
-    (company-tng-mode +1))
 
   ;; NOTE Fix #1335: ensure `company-emulation-alist' is the first item of
   ;;      `emulation-mode-map-alists', thus higher priority than keymaps of
@@ -73,6 +82,7 @@
   (after! eldoc
     (eldoc-add-command 'company-complete-selection
                        'company-complete-common
+                       'company-capf
                        'company-abort)))
 
 
@@ -80,17 +90,20 @@
 ;;; Packages
 
 (after! company-files
+  ;; Fix `company-files' completion for org file:* links
   (add-to-list 'company-files--regexps "file:\\(\\(?:\\.\\{1,2\\}/\\|~/\\|/\\)[^\]\n]*\\)"))
 
 
 (use-package! company-box
-  :when (featurep! +childframe)
+  :when (modulep! +childframe)
   :hook (company-mode . company-box-mode)
   :config
   (setq company-box-show-single-candidate t
         company-box-backends-colors nil
         company-box-max-candidates 50
         company-box-icons-alist 'company-box-icons-all-the-icons
+        ;; Move company-box-icons--elisp to the end, because it has a catch-all
+        ;; clause that ruins icons from other backends in elisp buffers.
         company-box-icons-functions
         (cons #'+company-box-icons--elisp-fn
               (delq 'company-box-icons--elisp
@@ -167,7 +180,7 @@
 (use-package! company-dict
   :defer t
   :config
-  (setq company-dict-dir (expand-file-name "dicts" doom-private-dir))
+  (setq company-dict-dir (expand-file-name "dicts" doom-user-dir))
   (add-hook! 'doom-project-hook
     (defun +company-enable-project-dicts-h (mode &rest _)
       "Enable per-project dictionaries."

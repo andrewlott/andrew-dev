@@ -36,8 +36,13 @@
     (sp-local-pair "do " " end" :unless '(sp-in-comment-p sp-in-string-p))
     (sp-local-pair "fn " " end" :unless '(sp-in-comment-p sp-in-string-p)))
 
-  (when (featurep! +lsp)
-    (add-hook 'elixir-mode-local-vars-hook #'lsp!))
+  (when (modulep! +lsp)
+    (add-hook 'elixir-mode-local-vars-hook #'lsp! 'append)
+    (after! lsp-mode
+      (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]_build\\'")))
+
+  (when (modulep! +tree-sitter)
+    (add-hook 'elixir-mode-local-vars-hook #'tree-sitter! 'append))
 
   (after! highlight-numbers
     (puthash 'elixir-mode
@@ -46,7 +51,7 @@
 
 
 (use-package! flycheck-credo
-  :when (featurep! :checkers syntax)
+  :when (modulep! :checkers syntax)
   :after elixir-mode
   :config (flycheck-credo-setup))
 
@@ -54,15 +59,27 @@
 (use-package! alchemist
   :hook (elixir-mode . alchemist-mode)
   :config
-  (set-lookup-handlers! 'alchemist-mode
+  (set-lookup-handlers! 'elixir-mode
     :definition #'alchemist-goto-definition-at-point
     :documentation #'alchemist-help-search-at-point)
-  (set-eval-handler! 'alchemist-mode #'alchemist-eval-region)
-  (set-repl-handler! 'alchemist-mode #'alchemist-iex-project-run))
+  (set-eval-handler! 'elixir-mode #'alchemist-eval-region)
+  (set-repl-handler! 'elixir-mode #'alchemist-iex-project-run)
+  (map! :after elixir-mode
+        :localleader
+        :map elixir-mode-map
+        "m" #'alchemist-mix
+        "c" #'alchemist-mix-compile
+        "i" #'alchemist-iex-project-run
+        "f" #'elixir-format
+        (:prefix ("e" . "eval")
+         "e" #'alchemist-iex-send-last-sexp
+         "r" #'alchemist-iex-send-region
+         "l" #'alchemist-iex-send-current-line
+         "R" #'alchemist-iex-reload-module)))
 
 
 (use-package! alchemist-company
-  :when (featurep! :completion company)
+  :when (modulep! :completion company)
   :commands alchemist-company
   :config
   (set-company-backend! 'alchemist-mode '(alchemist-company company-yasnippet))
@@ -78,7 +95,7 @@
   (map! :after elixir-mode
         :localleader
         :map elixir-mode-map
-        :prefix "t"
+        :prefix ("t" . "test")
         "a" #'exunit-verify-all
         "r" #'exunit-rerun
         "v" #'exunit-verify

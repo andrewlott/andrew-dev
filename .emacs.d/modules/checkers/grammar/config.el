@@ -10,7 +10,8 @@
   (unless (or langtool-bin
               langtool-language-tool-jar
               langtool-java-classpath)
-    (cond (IS-MAC
+    (cond ((setq langtool-bin (executable-find "languagetool")))
+          (IS-MAC
            (cond
             ;; is user using home brew?
             ((file-directory-p "/usr/local/Cellar/languagetool")
@@ -29,7 +30,7 @@
 ;; Detects weasel words, passive voice and duplicates. Proselint would be a
 ;; better choice.
 (use-package! writegood-mode
-  :hook (org-mode markdown-mode rst-mode asciidoc-mode latex-mode)
+  :hook (org-mode markdown-mode rst-mode asciidoc-mode latex-mode LaTeX-mode)
   :config
   (map! :localleader
         :map writegood-mode-map

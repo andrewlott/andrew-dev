@@ -1,12 +1,14 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; ui/treemacs/packages.el
 
-(package! treemacs :pin "332d4e0f1f606c472dd083c9cdd4f143ee23020a")
+(package! treemacs :pin "76807bef3c128aca33064228a80c5e6937a67b8c")
 ;; These packages have no :pin because they're in the same repo
-(when (featurep! :editor evil +everywhere)
+(when (modulep! :editor evil +everywhere)
   (package! treemacs-evil))
 (package! treemacs-projectile)
-(when (featurep! :tools magit)
+(when (modulep! :tools magit)
   (package! treemacs-magit))
-(when (featurep! :ui workspaces)
+(when (modulep! :ui workspaces)
   (package! treemacs-persp))
+(when (modulep! +lsp)
+  (package! lsp-treemacs :pin "2894e6dec583eaa77037627e9d8c3bc89cf7273d"))
